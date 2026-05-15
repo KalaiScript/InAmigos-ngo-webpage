@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            menuIcon.classList.toggle('fa-bars');
-            menuIcon.classList.toggle('fa-times');
+            if (menuIcon) {
+                menuIcon.classList.toggle('fa-bars');
+                menuIcon.classList.toggle('fa-times');
+            }
         });
     }
 
@@ -40,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Close mobile menu
                 if (navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
-                    menuIcon.classList.replace('fa-times', 'fa-bars');
+                    if (menuIcon) {
+                        menuIcon.classList.replace('fa-times', 'fa-bars');
+                    }
                 }
             }
         });
@@ -53,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startCounter = (counter) => {
         const updateCount = () => {
             const target = +counter.getAttribute('data-target');
-            const count = +counter.innerText.replace(/,/g, '');
+            const count = +counter.innerText.replace(/,/g, '').replace('+', '');
             const inc = target / speed;
 
             if (count < target) {
@@ -88,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Form Submission & Modal (with simulation storage)
     const actionForm = document.getElementById('mainActionForm');
     const modal = document.getElementById('successModal');
-    const closeModal = document.querySelector('.close-modal');
+    const closeModalBtns = document.querySelectorAll('.close-modal');
 
     if (actionForm) {
         actionForm.addEventListener('submit', (e) => {
@@ -101,10 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
             applications[email.toLowerCase()] = { name, status: 'Pending Review' };
             localStorage.setItem('ngo_apps', JSON.stringify(applications));
 
-            modal.style.display = 'flex';
+            if (modal) modal.style.display = 'flex';
             actionForm.reset();
         });
     }
+
+    if (closeModalBtns) {
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (modal) modal.style.display = 'none';
+            });
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (modal && e.target === modal) modal.style.display = 'none';
+    });
 
     // 6. Status Checking Logic
     const checkStatusBtn = document.getElementById('checkStatusBtn');
@@ -112,6 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusResult = document.getElementById('statusResult');
     const statusError = document.getElementById('statusError');
     const resName = document.getElementById('resName');
+    const resStatus = document.getElementById('resStatus');
+    const statusSteps = document.querySelectorAll('.step');
 
     if (checkStatusBtn) {
         checkStatusBtn.addEventListener('click', () => {
@@ -119,11 +137,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
             
             if (apps[email]) {
+                const app = apps[email];
                 statusResult.style.display = 'block';
                 statusError.style.display = 'none';
-                resName.innerText = apps[email].name;
+                resName.innerText = app.name;
+                resStatus.innerText = app.status;
+
+                // Update Progress Steps UI
+                statusSteps.forEach(step => step.classList.remove('active', 'completed'));
                 
-                // Trigger animation
+                if (app.status === 'Pending Review') {
+                    statusSteps[0].classList.add('completed');
+                    statusSteps[1].classList.add('active');
+                } else if (app.status === 'Onboarding') {
+                    statusSteps[0].classList.add('completed');
+                    statusSteps[1].classList.add('completed');
+                    statusSteps[2].classList.add('active');
+                }
+                
                 statusResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
                 statusResult.style.display = 'none';
@@ -136,21 +167,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTopBtn = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 300) {
-            backToTopBtn.style.display = 'block';
+            if (backToTopBtn) backToTopBtn.style.display = 'block';
         } else {
-            backToTopBtn.style.display = 'none';
+            if (backToTopBtn) backToTopBtn.style.display = 'none';
         }
     });
 
-    backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 });
 
 /* Animation Styles */
-const style = document.createElement('style');
-style.textContent = `
+const styleElement = document.createElement('style');
+styleElement.textContent = `
     .fade-in-section { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
     .fade-in-visible { opacity: 1 !important; transform: translateY(0) !important; }
 `;
-document.head.appendChild(style);
+document.head.appendChild(styleElement);
