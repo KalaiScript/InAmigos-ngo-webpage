@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InAmigos NGO | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="logo" style="color: white; padding: 20px;">
+                <span class="logo-in">In</span>Amigos
+            </div>
+            <ul class="admin-nav">
+                <li class="active"><i class="fas fa-th-large"></i> Dashboard</li>
+                <li><i class="fas fa-users"></i> Volunteers</li>
+                <li><i class="fas fa-hand-holding-usd"></i> Donations</li>
+                <li><i class="fas fa-images"></i> Gallery</li>
+                <li style="margin-top: auto;"><a href="index.html" style="color: #ff6b6b;"><i class="fas fa-sign-out-alt"></i> Exit Admin</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Admin <span class="highlight">Dashboard</span></h1>
+                <div class="admin-user">
+                    <span>Welcome, Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+
+            <section class="admin-content">
+                <!-- Stats Overview -->
+                <div class="admin-stats-grid">
+                    <div class="stat-box">
+                        <p>Total Applications</p>
+                        <h2 id="totalApps">0</h2>
+                    </div>
+                    <div class="stat-box">
+                        <p>Pending Review</p>
+                        <h2 id="pendingApps">0</h2>
+                    </div>
+                    <div class="stat-box">
+                        <p>Approved Volunteers</p>
+                        <h2 id="approvedApps">0</h2>
+                    </div>
+                </div>
+
+                <!-- Applications Table -->
+                <div class="admin-table-container">
+                    <h3>Recent Applications</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.getElementById('adminTableBody');
+            const totalAppsEl = document.getElementById('totalApps');
+            const pendingAppsEl = document.getElementById('pendingApps');
+            const approvedAppsEl = document.getElementById('approvedApps');
+
+            function loadApplications() {
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                tableBody.innerHTML = '';
+                
+                let total = 0;
+                let pending = 0;
+                let approved = 0;
+
+                Object.keys(apps).forEach(email => {
+                    total++;
+                    const app = apps[email];
+                    if (app.status === 'Pending Review') pending++;
+                    if (app.status === 'Onboarding' || app.status === 'Approved') approved++;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${app.name}</td>
+                        <td>${email}</td>
+                        <td><span class="status-badge ${app.status.replace(/\s+/g, '-').toLowerCase()}">${app.status}</span></td>
+                        <td>
+                            <button class="btn-sm btn-approve" onclick="updateStatus('${email}', 'Onboarding')">Approve</button>
+                            <button class="btn-sm btn-reject" onclick="deleteApp('${email}')">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                totalAppsEl.innerText = total;
+                pendingAppsEl.innerText = pending;
+                approvedAppsEl.innerText = approved;
+            }
+
+            window.updateStatus = (email, newStatus) => {
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                if (apps[email]) {
+                    apps[email].status = newStatus;
+                    localStorage.setItem('ngo_apps', JSON.stringify(apps));
+                    loadApplications();
+                }
+            };
+
+            window.deleteApp = (email) => {
+                if (confirm('Are you sure you want to delete this application?')) {
+                    const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                    delete apps[email];
+                    localStorage.setItem('ngo_apps', JSON.stringify(apps));
+                    loadApplications();
+                }
+            };
+
+            loadApplications();
+        });
+    </script>
+
+    <style>
+        .admin-body { background: #f4f7f6; margin: 0; font-family: 'Inter', sans-serif; }
+        .admin-container { display: flex; min-height: 100vh; }
+        
+        .admin-sidebar { width: 260px; background: #2c3e50; color: white; display: flex; flex-direction: column; }
+        .admin-nav { list-style: none; padding: 0; margin-top: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .admin-nav li { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; }
+        .admin-nav li:hover, .admin-nav li.active { background: #34495e; border-left: 4px solid #3498db; }
+        
+        .admin-main { flex: 1; padding: 30px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+        .stat-box p { color: #888; margin-bottom: 10px; }
+        
+        .admin-table-container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .admin-table th, .admin-table td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
+        .admin-table th { color: #888; font-weight: 600; }
+        
+        .btn-sm { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-approve { background: #27ae60; color: white; }
+        .btn-reject { background: #e74c3c; color: white; margin-left: 5px; }
+        
+        .status-badge.pending-review { background: #ffeaa7; color: #d35400; }
+        .status-badge.onboarding { background: #55efc4; color: #00b894; }
+    </style>
+</body>
+</html>
