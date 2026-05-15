@@ -7,12 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            
-            if (navLinks.classList.contains('active')) {
-                menuIcon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                menuIcon.classList.replace('fa-times', 'fa-bars');
-            }
+            menuIcon.classList.toggle('fa-bars');
+            menuIcon.classList.toggle('fa-times');
         });
     }
 
@@ -25,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                // Adjust for sticky header
                 const headerOffset = 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -35,7 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     behavior: 'smooth'
                 });
 
-                // Close mobile menu if open
+                // Handle specific triggers (Volunteer/Donate)
+                if (this.classList.contains('btn-trigger')) {
+                    const type = this.getAttribute('data-type');
+                    const select = document.getElementById('helpType');
+                    if (select) select.value = type;
+                }
+
+                // Close mobile menu
                 if (navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                     menuIcon.classList.replace('fa-times', 'fa-bars');
@@ -51,11 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const startCounter = (counter) => {
         const updateCount = () => {
             const target = +counter.getAttribute('data-target');
-            const count = +counter.innerText;
+            const count = +counter.innerText.replace(/,/g, '');
             const inc = target / speed;
 
             if (count < target) {
-                counter.innerText = Math.ceil(count + inc);
+                counter.innerText = Math.ceil(count + inc).toLocaleString();
                 setTimeout(updateCount, 1);
             } else {
                 counter.innerText = target.toLocaleString() + '+';
@@ -64,63 +66,67 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCount();
     };
 
-    // 4. Intersection Observer for Fade-in and Counter
-    const observerOptions = {
-        threshold: 0.2
-    };
-
+    // 4. Intersection Observer
+    const observerOptions = { threshold: 0.2 };
     const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Handle fade-in
                 entry.target.classList.add('fade-in-visible');
-                
-                // Trigger counter if it's the impact section
                 if (entry.target.classList.contains('impact')) {
                     counters.forEach(counter => startCounter(counter));
                 }
-                
                 sectionObserver.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    // Set initial state for animations
     document.querySelectorAll('section').forEach(section => {
         section.classList.add('fade-in-section');
         sectionObserver.observe(section);
     });
 
-    // 5. Back to Top Button Logic
-    const backToTopBtn = document.getElementById('backToTop');
+    // 5. Form Submission & Modal
+    const actionForm = document.getElementById('mainActionForm');
+    const modal = document.getElementById('successModal');
+    const closeModal = document.querySelector('.close-modal');
 
-    window.onscroll = () => {
-        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+    if (actionForm) {
+        actionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+            actionForm.reset();
+        });
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+
+    // 6. Back to Top Button
+    const backToTopBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
             backToTopBtn.style.display = 'block';
         } else {
             backToTopBtn.style.display = 'none';
         }
-    };
+    });
 
     backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });
 
-/* CSS injection for animations to keep script file self-contained for logic */
+/* Animation Styles */
 const style = document.createElement('style');
 style.textContent = `
-    .fade-in-section {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-    .fade-in-visible {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
+    .fade-in-section { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+    .fade-in-visible { opacity: 1 !important; transform: translateY(0) !important; }
 `;
 document.head.appendChild(style);

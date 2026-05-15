@@ -53,22 +53,22 @@
             <div class="container">
                 <div class="section-header text-center">
                     <h2>About <span class="highlight">InAmigos</span></h2>
-                    <p>We are a community of passionate individuals dedicated to social welfare and humanitarian causes.</p>
+                    <p>Building a brighter future through collective action and community empowerment.</p>
                 </div>
                 <div class="about-grid">
                     <div class="about-text">
-                        <h3>Our Mission</h3>
-                        <p>To uplift underprivileged communities by providing access to education, healthcare, and sustainable livelihood opportunities.</p>
-                        <h3>Our Vision</h3>
-                        <p>A world where every individual has the opportunity to thrive, regardless of their background or circumstances.</p>
+                        <h3>Our Story</h3>
+                        <p>Founded in 2020, InAmigos started with a simple belief: that small acts of kindness can spark massive change. What began as a local student initiative has grown into a structured NGO dedicated to uplifting underprivileged communities.</p>
+                        <p>We work on the front lines of education, healthcare, and environmental sustainability, ensuring that every project creates a lasting impact on the ground.</p>
+                        <h3>Our Core Values</h3>
                         <ul class="values-list">
-                            <li><i class="fas fa-check-circle"></i> Integrity & Transparency</li>
-                            <li><i class="fas fa-check-circle"></i> Inclusive Development</li>
-                            <li><i class="fas fa-check-circle"></i> Sustainable Impact</li>
+                            <li><i class="fas fa-heart"></i> <strong>Compassion:</strong> We lead with empathy in every initiative.</li>
+                            <li><i class="fas fa-shield-alt"></i> <strong>Transparency:</strong> Openness in all our operations and fund usage.</li>
+                            <li><i class="fas fa-seedling"></i> <strong>Sustainability:</strong> Focusing on long-term growth rather than short-term fixes.</li>
                         </ul>
                     </div>
                     <div class="about-image">
-                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volunteers working together">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volunteers working together">
                     </div>
                 </div>
             </div>
@@ -160,7 +160,42 @@
                     <div class="gallery-item"><img src="https://images.unsplash.com/photo-1524069290683-0457abfe42c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gallery Image 3"></div>
                     <div class="gallery-item"><img src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gallery Image 4"></div>
                     <div class="gallery-item"><img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gallery Image 5"></div>
-                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1459183885421-5cc683b8dbaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gallery Image 6"></div>
+                    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1518391846015-55a9cc003b25?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gallery Image 6"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Join Us / Contact Section -->
+        <section id="contact-form" class="contact-section section-padding">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Join the <span class="highlight">Movement</span></h2>
+                    <p>Whether you want to volunteer, donate, or just say hello, we'd love to hear from you.</p>
+                </div>
+                <div class="contact-wrapper">
+                    <form class="action-form" id="mainActionForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>How would you like to help?</label>
+                            <select id="helpType">
+                                <option value="volunteer">Become a Volunteer</option>
+                                <option value="donate">Make a Donation</option>
+                                <option value="partner">Partner with Us</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Message (Optional)</label>
+                            <textarea rows="4" placeholder="Tell us more..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large w-100">Submit Application</button>
+                    </form>
                 </div>
             </div>
         </section>
@@ -171,12 +206,22 @@
                 <h2>Be the <span class="highlight">Change</span> You Wish to See</h2>
                 <p>Your small contribution can make a big difference in someone's life. Join our community of volunteers today.</p>
                 <div class="cta-btns">
-                    <a href="#" class="btn btn-primary btn-large">Become a Volunteer</a>
-                    <a href="#" class="btn btn-white btn-large">Donate Now</a>
+                    <a href="#contact-form" class="btn btn-primary btn-large btn-trigger" data-type="volunteer">Become a Volunteer</a>
+                    <a href="#contact-form" class="btn btn-white btn-large btn-trigger" data-type="donate">Donate Now</a>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Modal for Success Message -->
+    <div id="successModal" class="modal">
+        <div class="modal-content text-center">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>Thank You!</h2>
+            <p>Your request has been received. Our team will contact you shortly to guide you through the process.</p>
+            <button class="btn btn-primary close-modal">Close</button>
+        </div>
+    </div>
 
     <!-- Back to Top Button -->
     <button id="backToTop" title="Go to top"><i class="fas fa-arrow-up"></i></button>
