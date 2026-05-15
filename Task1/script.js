@@ -1,70 +1,126 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
+    // 1. Mobile Menu Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const menuIcon = menuToggle.querySelector('i');
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             
-            // Basic animation for toggle icon
-            const icon = menuToggle.querySelector('i');
             if (navLinks.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-                navLinks.style.display = 'flex';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '80px';
-                navLinks.style.left = '0';
-                navLinks.style.width = '100%';
-                navLinks.style.backgroundColor = '#fff';
-                navLinks.style.padding = '20px';
-                navLinks.style.boxShadow = '0 5px 10px rgba(0,0,0,0.1)';
+                menuIcon.classList.replace('fa-bars', 'fa-times');
             } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-                navLinks.style.display = 'none';
+                menuIcon.classList.replace('fa-times', 'fa-bars');
             }
         });
     }
 
-    // Smooth scroll for nav links (redundant due to CSS but good for older browsers)
+    // 2. Smooth scroll for all anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Adjust for sticky header
+                const headerOffset = 80;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
                     behavior: 'smooth'
                 });
+
                 // Close mobile menu if open
                 if (navLinks.classList.contains('active')) {
-                    menuToggle.click();
+                    navLinks.classList.remove('active');
+                    menuIcon.classList.replace('fa-times', 'fa-bars');
                 }
             }
         });
     });
 
-    // Simple Animation on Scroll (Optional but adds "internship-winning" feel)
-    const observerOptions = {
-        threshold: 0.1
+    // 3. Counter Animation for Impact Section
+    const counters = document.querySelectorAll('.stat-number');
+    const speed = 200;
+
+    const startCounter = (counter) => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / speed;
+
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 1);
+            } else {
+                counter.innerText = target.toLocaleString() + '+';
+            }
+        };
+        updateCount();
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    // 4. Intersection Observer for Fade-in and Counter
+    const observerOptions = {
+        threshold: 0.2
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                // Handle fade-in
+                entry.target.classList.add('fade-in-visible');
+                
+                // Trigger counter if it's the impact section
+                if (entry.target.classList.contains('impact')) {
+                    counters.forEach(counter => startCounter(counter));
+                }
+                
+                sectionObserver.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    // Apply basic fade-in to sections
+    // Set initial state for animations
     document.querySelectorAll('section').forEach(section => {
-        section.style.opacity = '0';
-        section.style.transform = 'translateY(20px)';
-        section.style.transition = 'all 0.6s ease-out';
-        observer.observe(section);
+        section.classList.add('fade-in-section');
+        sectionObserver.observe(section);
+    });
+
+    // 5. Back to Top Button Logic
+    const backToTopBtn = document.getElementById('backToTop');
+
+    window.onscroll = () => {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            backToTopBtn.style.display = 'block';
+        } else {
+            backToTopBtn.style.display = 'none';
+        }
+    };
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     });
 });
+
+/* CSS injection for animations to keep script file self-contained for logic */
+const style = document.createElement('style');
+style.textContent = `
+    .fade-in-section {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .fade-in-visible {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+`;
+document.head.appendChild(style);
