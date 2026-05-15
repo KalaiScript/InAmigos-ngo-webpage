@@ -26,7 +26,8 @@
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#impact">Impact</a></li>
                 <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact" class="btn btn-primary">Join Us</a></li>
+                <li><a href="#status-check">Check Status</a></li>
+                <li><a href="#contact-form" class="btn btn-primary">Join Us</a></li>
             </ul>
             <div class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -212,6 +213,48 @@
             </div>
         </section>
     </main>
+
+        <!-- Status Tracking Section -->
+        <section id="status-check" class="status-section section-padding bg-light">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Track Your <span class="highlight">Application</span></h2>
+                    <p>Already applied? Enter your email address to check the current status of your volunteer or donation request.</p>
+                </div>
+                <div class="status-wrapper">
+                    <div class="status-search">
+                        <input type="email" id="statusEmail" placeholder="Enter your registered email" required>
+                        <button id="checkStatusBtn" class="btn btn-primary">Check Status</button>
+                    </div>
+                    <div id="statusResult" class="status-result" style="display: none;">
+                        <div class="status-card">
+                            <div class="status-header">
+                                <h3 id="resName">John Doe</h3>
+                                <span class="status-badge" id="resStatus">Pending Review</span>
+                            </div>
+                            <div class="status-steps">
+                                <div class="step completed">
+                                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                                    <p>Applied</p>
+                                </div>
+                                <div class="step active">
+                                    <div class="step-icon"><i class="fas fa-user-check"></i></div>
+                                    <p>Reviewing</p>
+                                </div>
+                                <div class="step">
+                                    <div class="step-icon"><i class="fas fa-handshake"></i></div>
+                                    <p>Onboarding</p>
+                                </div>
+                            </div>
+                            <p class="status-note"><strong>Note:</strong> Our team is currently reviewing your profile. Expect a call within 2-3 business days.</p>
+                        </div>
+                    </div>
+                    <div id="statusError" class="status-error" style="display: none;">
+                        <p><i class="fas fa-exclamation-circle"></i> No application found for this email. Please <a href="#contact-form">apply here</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     <!-- Modal for Success Message -->
     <div id="successModal" class="modal">

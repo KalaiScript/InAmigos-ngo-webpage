@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sectionObserver.observe(section);
     });
 
-    // 5. Form Submission & Modal
+    // 5. Form Submission & Modal (with simulation storage)
     const actionForm = document.getElementById('mainActionForm');
     const modal = document.getElementById('successModal');
     const closeModal = document.querySelector('.close-modal');
@@ -93,22 +93,46 @@ document.addEventListener('DOMContentLoaded', () => {
     if (actionForm) {
         actionForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            // Simulation: Save the application to local storage for status checking
+            const name = actionForm.querySelector('input[type="text"]').value;
+            const email = actionForm.querySelector('input[type="email"]').value;
+            const applications = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+            applications[email.toLowerCase()] = { name, status: 'Pending Review' };
+            localStorage.setItem('ngo_apps', JSON.stringify(applications));
+
             modal.style.display = 'flex';
             actionForm.reset();
         });
     }
 
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
+    // 6. Status Checking Logic
+    const checkStatusBtn = document.getElementById('checkStatusBtn');
+    const statusEmailInput = document.getElementById('statusEmail');
+    const statusResult = document.getElementById('statusResult');
+    const statusError = document.getElementById('statusError');
+    const resName = document.getElementById('resName');
+
+    if (checkStatusBtn) {
+        checkStatusBtn.addEventListener('click', () => {
+            const email = statusEmailInput.value.toLowerCase();
+            const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+            
+            if (apps[email]) {
+                statusResult.style.display = 'block';
+                statusError.style.display = 'none';
+                resName.innerText = apps[email].name;
+                
+                // Trigger animation
+                statusResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                statusResult.style.display = 'none';
+                statusError.style.display = 'block';
+            }
         });
     }
 
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    });
-
-    // 6. Back to Top Button
+    // 7. Back to Top Button
     const backToTopBtn = document.getElementById('backToTop');
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 300) {

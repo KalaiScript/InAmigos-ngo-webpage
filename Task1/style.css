@@ -570,6 +570,133 @@ footer {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- Status Tracking Section --- */
+.status-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.status-search {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.status-search input {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.status-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.status-badge {
+    background: var(--accent-color);
+    color: var(--text-color);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.status-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.status-steps::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #eee;
+    z-index: 1;
+}
+
+.step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--white);
+    border: 2px solid #eee;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    color: #ccc;
+    transition: var(--transition);
+}
+
+.step.completed .step-icon {
+    border-color: var(--secondary-color);
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.step.active .step-icon {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 0 5px rgba(0,86,179,0.1);
+}
+
+.step p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #888;
+}
+
+.step.active p {
+    color: var(--primary-color);
+}
+
+.status-note {
+    background: #fff8e1;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid var(--accent-color);
+    font-size: 0.95rem;
+}
+
+.status-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.status-error a {
+    color: #c62828;
+    text-decoration: underline;
+    font-weight: 700;
+}
+
 /* --- Responsive Design --- */
 @media (max-width: 992px) {
     h1 { font-size: 2.5rem; }
