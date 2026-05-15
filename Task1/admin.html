@@ -15,11 +15,11 @@
             <div class="logo" style="color: white; padding: 20px;">
                 <span class="logo-in">In</span>Amigos
             </div>
-            <ul class="admin-nav">
-                <li class="active"><i class="fas fa-th-large"></i> Dashboard</li>
-                <li><i class="fas fa-users"></i> Volunteers</li>
-                <li><i class="fas fa-hand-holding-usd"></i> Donations</li>
-                <li><i class="fas fa-images"></i> Gallery</li>
+            <ul class="admin-nav" id="adminNav">
+                <li class="active" data-target="dashboard"><i class="fas fa-th-large"></i> Dashboard</li>
+                <li data-target="volunteers"><i class="fas fa-users"></i> Volunteers</li>
+                <li data-target="donations"><i class="fas fa-hand-holding-usd"></i> Donations</li>
+                <li data-target="gallery"><i class="fas fa-images"></i> Gallery</li>
                 <li style="margin-top: auto;"><a href="index.html" style="color: #ff6b6b;"><i class="fas fa-sign-out-alt"></i> Exit Admin</a></li>
             </ul>
         </aside>
@@ -27,15 +27,15 @@
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1>Admin <span class="highlight">Dashboard</span></h1>
+                <h1 id="pageTitle">Admin <span class="highlight">Dashboard</span></h1>
                 <div class="admin-user">
                     <span>Welcome, Admin</span>
                     <i class="fas fa-user-circle"></i>
                 </div>
             </header>
 
-            <section class="admin-content">
-                <!-- Stats Overview -->
+            <!-- Dashboard Tab -->
+            <section id="dashboardSection" class="admin-section active">
                 <div class="admin-stats-grid">
                     <div class="stat-box">
                         <p>Total Applications</p>
@@ -51,9 +51,8 @@
                     </div>
                 </div>
 
-                <!-- Applications Table -->
                 <div class="admin-table-container">
-                    <h3>Recent Applications</h3>
+                    <h3>Recent Activity</h3>
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -64,9 +63,104 @@
                             </tr>
                         </thead>
                         <tbody id="adminTableBody">
-                            <!-- JS will populate this -->
+                            <!-- JS will populate -->
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- Volunteers Tab -->
+            <section id="volunteersSection" class="admin-section">
+                <div class="admin-table-container">
+                    <h3>Manage Volunteers</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Joining Date</th>
+                                <th>Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody id="volunteerTableBody">
+                            <tr>
+                                <td>Amit Sharma</td>
+                                <td>amit@example.com</td>
+                                <td>12 May 2026</td>
+                                <td><span class="status-badge onboarding">High</span></td>
+                            </tr>
+                            <tr>
+                                <td>Priya Singh</td>
+                                <td>priya@example.com</td>
+                                <td>10 May 2026</td>
+                                <td><span class="status-badge onboarding">Medium</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Donations Tab -->
+            <section id="donationsSection" class="admin-section">
+                <div class="admin-stats-grid">
+                    <div class="stat-box">
+                        <p>Total Donations</p>
+                        <h2>₹ 45,000</h2>
+                    </div>
+                    <div class="stat-box">
+                        <p>Donors</p>
+                        <h2>128</h2>
+                    </div>
+                    <div class="stat-box">
+                        <p>Goal Progress</p>
+                        <h2>75%</h2>
+                    </div>
+                </div>
+                <div class="admin-table-container">
+                    <h3>Recent Transactions</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Donor</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Project</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Rahul Verma</td>
+                                <td>₹ 5,000</td>
+                                <td>14 May 2026</td>
+                                <td>Project Shiksha</td>
+                            </tr>
+                            <tr>
+                                <td>Sneha Kapoor</td>
+                                <td>₹ 2,000</td>
+                                <td>13 May 2026</td>
+                                <td>Health First</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Gallery Management Tab -->
+            <section id="gallerySection" class="admin-section">
+                <div class="gallery-management-grid">
+                    <div class="add-photo-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add New Photo</p>
+                    </div>
+                    <!-- Sample Gallery Items -->
+                    <div class="gallery-admin-item">
+                        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=200" alt="Gallery">
+                        <button class="delete-img"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="gallery-admin-item">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=200" alt="Gallery">
+                        <button class="delete-img"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -78,6 +172,27 @@
             const totalAppsEl = document.getElementById('totalApps');
             const pendingAppsEl = document.getElementById('pendingApps');
             const approvedAppsEl = document.getElementById('approvedApps');
+            const navItems = document.querySelectorAll('#adminNav li[data-target]');
+            const sections = document.querySelectorAll('.admin-section');
+            const pageTitle = document.getElementById('pageTitle');
+
+            // Tab Switching Logic
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const target = item.getAttribute('data-target');
+                    
+                    // Update Nav UI
+                    navItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    // Update Sections
+                    sections.forEach(s => s.classList.remove('active'));
+                    document.getElementById(target + 'Section').classList.add('active');
+                    
+                    // Update Title
+                    pageTitle.innerHTML = `Admin <span class="highlight">${target.charAt(0).toUpperCase() + target.slice(1)}</span>`;
+                });
+            });
 
             function loadApplications() {
                 const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
@@ -134,23 +249,31 @@
     </script>
 
     <style>
-        .admin-body { background: #f4f7f6; margin: 0; font-family: 'Inter', sans-serif; }
+        .admin-body { background: #f4f7f6; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .admin-container { display: flex; min-height: 100vh; }
         
-        .admin-sidebar { width: 260px; background: #2c3e50; color: white; display: flex; flex-direction: column; }
+        .admin-sidebar { width: 260px; background: #2c3e50; color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; }
         .admin-nav { list-style: none; padding: 0; margin-top: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         .admin-nav li { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; }
         .admin-nav li:hover, .admin-nav li.active { background: #34495e; border-left: 4px solid #3498db; }
         
-        .admin-main { flex: 1; padding: 30px; }
+        .admin-main { flex: 1; padding: 30px; margin-left: 260px; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         
-        .admin-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .admin-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .admin-section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-box { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
         .stat-box p { color: #888; margin-bottom: 10px; }
         
-        .admin-table-container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .admin-table-container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 600px; }
         .admin-table th, .admin-table td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
         .admin-table th { color: #888; font-weight: 600; }
         
@@ -160,6 +283,17 @@
         
         .status-badge.pending-review { background: #ffeaa7; color: #d35400; }
         .status-badge.onboarding { background: #55efc4; color: #00b894; }
+
+        /* Gallery Management Styles */
+        .gallery-management-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .add-photo-card { border: 2px dashed #ccc; border-radius: 10px; height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: #888; transition: 0.3s; }
+        .add-photo-card:hover { border-color: #3498db; color: #3498db; }
+        .add-photo-card i { font-size: 2rem; margin-bottom: 10px; }
+        
+        .gallery-admin-item { position: relative; height: 150px; border-radius: 10px; overflow: hidden; }
+        .gallery-admin-item img { width: 100%; height: 100%; object-fit: cover; }
+        .delete-img { position: absolute; top: 10px; right: 10px; background: rgba(231, 76, 60, 0.9); color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; opacity: 0; transition: 0.3s; }
+        .gallery-admin-item:hover .delete-img { opacity: 1; }
     </style>
 </body>
 </html>
