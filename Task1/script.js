@@ -93,20 +93,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const actionForm = document.getElementById('mainActionForm');
     const modal = document.getElementById('successModal');
     const closeModalBtns = document.querySelectorAll('.close-modal');
+    
+    const helpTypeSelect = document.getElementById('helpType');
+    const donationAmountGroup = document.getElementById('donationAmountGroup');
+    const donationAmountInput = document.getElementById('donationAmount');
+
+    if (helpTypeSelect && donationAmountGroup) {
+        helpTypeSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'donate') {
+                donationAmountGroup.style.display = 'block';
+                if (donationAmountInput) donationAmountInput.setAttribute('required', 'true');
+            } else {
+                donationAmountGroup.style.display = 'none';
+                if (donationAmountInput) donationAmountInput.removeAttribute('required');
+            }
+        });
+    }
 
     if (actionForm) {
         actionForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Simulation: Save the application to local storage for status checking
             const name = actionForm.querySelector('input[type="text"]').value;
             const email = actionForm.querySelector('input[type="email"]').value;
+            const type = helpTypeSelect ? helpTypeSelect.value : 'volunteer';
+            let amount = 0;
+            if (type === 'donate' && donationAmountInput) {
+                amount = donationAmountInput.value;
+            }
+
             const applications = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
-            applications[email.toLowerCase()] = { name, status: 'Pending Review' };
+            applications[email.toLowerCase()] = { 
+                name, 
+                status: 'Pending Review',
+                type: type,
+                amount: amount,
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+            };
             localStorage.setItem('ngo_apps', JSON.stringify(applications));
 
             if (modal) modal.style.display = 'flex';
             actionForm.reset();
+            if (donationAmountGroup) donationAmountGroup.style.display = 'none';
         });
     }
 
@@ -160,6 +188,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusResult.style.display = 'none';
                 statusError.style.display = 'block';
             }
+        });
+    }
+
+    // Dynamic Gallery Rendering
+    const galleryGrid = document.getElementById('galleryGrid');
+    if (galleryGrid) {
+        let galleryImages = JSON.parse(localStorage.getItem('ngo_gallery') || '[]');
+        if (galleryImages.length === 0) {
+            galleryImages = [
+                "https://images.unsplash.com/photo-1509099836639-18ba1795216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1524069290683-0457abfe42c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1518391846015-55a9cc003b25?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1542810634-71277d95dcbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            ];
+            localStorage.setItem('ngo_gallery', JSON.stringify(galleryImages));
+        }
+
+        galleryGrid.innerHTML = galleryImages.map(img => `
+            <div class="gallery-item"><img src="${img}" alt="Gallery Image"></div>
+        `).join('');
+    }
+
+    // Dark Mode Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const rootElement = document.documentElement;
+    const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+
+    const savedTheme = localStorage.getItem('ngo_theme');
+    if (savedTheme === 'dark') {
+        rootElement.classList.add('dark-mode');
+        if (themeIcon) themeIcon.className = 'fas fa-sun';
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            rootElement.classList.toggle('dark-mode');
+            const isDark = rootElement.classList.contains('dark-mode');
+            
+            if (themeIcon) {
+                themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            
+            localStorage.setItem('ngo_theme', isDark ? 'dark' : 'light');
         });
     }
 

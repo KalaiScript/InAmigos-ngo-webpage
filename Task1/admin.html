@@ -9,7 +9,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="admin-body">
-    <div class="admin-container">
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="admin-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="admin-modal-content" style="background: #fff; padding: 40px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div class="logo" style="text-align: center; margin-bottom: 20px; font-size: 1.8rem; font-weight: bold;">
+                <span class="logo-in" style="color: #0056b3;">In</span>Amigos
+            </div>
+            <h2 style="text-align: center; margin-bottom: 20px;">Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter Password (admin123)" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div id="loginError" style="color: red; margin-bottom: 15px; display: none; text-align: center; font-weight: 600;">Incorrect Password</div>
+                <button type="submit" style="width: 100%; padding: 12px; background: #0056b3; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem; font-weight: 600;">Login</button>
+            </form>
+        </div>
+    </div>
+    <div class="admin-container" id="adminMainContent" style="display: none;">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="logo">
@@ -103,18 +120,7 @@
                             </tr>
                         </thead>
                         <tbody id="volunteerTableBody">
-                            <tr>
-                                <td>Amit Sharma</td>
-                                <td>amit@example.com</td>
-                                <td>12 May 2026</td>
-                                <td><span class="status-badge onboarding">High</span></td>
-                            </tr>
-                            <tr>
-                                <td>Priya Singh</td>
-                                <td>priya@example.com</td>
-                                <td>10 May 2026</td>
-                                <td><span class="status-badge onboarding">Medium</span></td>
-                            </tr>
+                            <!-- JS will populate -->
                         </tbody>
                     </table>
                 </div>
@@ -126,12 +132,12 @@
                     <div class="stat-box">
                         <i class="fas fa-coins"></i>
                         <p>Total Donations</p>
-                        <h2>₹ 45,000</h2>
+                        <h2 id="totalDonationsAmount">₹ 0</h2>
                     </div>
                     <div class="stat-box">
                         <i class="fas fa-hand-holding-usd"></i>
                         <p>Donors</p>
-                        <h2>128</h2>
+                        <h2 id="totalDonorsCount">0</h2>
                     </div>
                     <div class="stat-box">
                         <i class="fas fa-chart-line"></i>
@@ -145,24 +151,13 @@
                         <thead>
                             <tr>
                                 <th>Donor</th>
+                                <th>Email</th>
                                 <th>Amount</th>
                                 <th>Date</th>
-                                <th>Project</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Rahul Verma</td>
-                                <td>₹ 5,000</td>
-                                <td>14 May 2026</td>
-                                <td>Project Shiksha</td>
-                            </tr>
-                            <tr>
-                                <td>Sneha Kapoor</td>
-                                <td>₹ 2,000</td>
-                                <td>13 May 2026</td>
-                                <td>Health First</td>
-                            </tr>
+                        <tbody id="donationTableBody">
+                            <!-- JS will populate -->
                         </tbody>
                     </table>
                 </div>
@@ -170,19 +165,12 @@
 
             <!-- Gallery Management Tab -->
             <section id="gallerySection" class="admin-section">
-                <div class="gallery-management-grid">
-                    <div class="add-photo-card">
+                <div class="gallery-management-grid" id="adminGalleryGrid">
+                    <div class="add-photo-card" id="addPhotoBtn" style="cursor: pointer;">
                         <i class="fas fa-plus-circle"></i>
-                        <p>Add New Photo</p>
+                        <p>Add New Photo URL</p>
                     </div>
-                    <div class="gallery-admin-item">
-                        <img src="https://images.unsplash.com/photo-1509099836639-18ba1795216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=200" alt="Gallery">
-                        <button class="delete-img"><i class="fas fa-trash"></i></button>
-                    </div>
-                    <div class="gallery-admin-item">
-                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=200" alt="Gallery">
-                        <button class="delete-img"><i class="fas fa-trash"></i></button>
-                    </div>
+                    <!-- JS will populate -->
                 </div>
             </section>
         </main>
@@ -261,6 +249,107 @@
                 approvedAppsEl.innerText = approved;
             }
 
+            function loadVolunteers() {
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                const vTableBody = document.getElementById('volunteerTableBody');
+                vTableBody.innerHTML = '';
+                
+                const volunteers = Object.entries(apps).filter(([e, a]) => a.type === 'volunteer' && (a.status === 'Approved' || a.status === 'Onboarding'));
+                if(volunteers.length === 0) {
+                    vTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No active volunteers found</td></tr>';
+                    return;
+                }
+
+                volunteers.forEach(([email, app]) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${app.name}</strong></td>
+                        <td>${email}</td>
+                        <td>${app.date || 'Recent'}</td>
+                        <td><span class="status-badge onboarding">Active</span></td>
+                    `;
+                    vTableBody.appendChild(tr);
+                });
+            }
+
+            function loadDonations() {
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                const dTableBody = document.getElementById('donationTableBody');
+                dTableBody.innerHTML = '';
+                
+                let totalAmount = 0;
+                const donations = Object.entries(apps).filter(([e, a]) => a.type === 'donate');
+                
+                if(donations.length === 0) {
+                    dTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No donations found</td></tr>';
+                }
+
+                donations.forEach(([email, app]) => {
+                    const amt = parseInt(app.amount) || 0;
+                    totalAmount += amt;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${app.name}</strong></td>
+                        <td>${email}</td>
+                        <td>₹ ${amt.toLocaleString()}</td>
+                        <td>${app.date || 'Recent'}</td>
+                    `;
+                    dTableBody.appendChild(tr);
+                });
+
+                document.getElementById('totalDonationsAmount').innerText = `₹ ${totalAmount.toLocaleString()}`;
+                document.getElementById('totalDonorsCount').innerText = donations.length;
+            }
+
+            function loadGallery() {
+                const adminGalleryGrid = document.getElementById('adminGalleryGrid');
+                // Keep the add button
+                const addBtnHtml = `
+                    <div class="add-photo-card" id="addPhotoBtn" style="cursor: pointer;" onclick="addPhoto()">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add New Photo URL</p>
+                    </div>`;
+                
+                let galleryImages = JSON.parse(localStorage.getItem('ngo_gallery') || '[]');
+                if (galleryImages.length === 0) {
+                    galleryImages = [
+                        "https://images.unsplash.com/photo-1509099836639-18ba1795216d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        "https://images.unsplash.com/photo-1524069290683-0457abfe42c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                        "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                    ];
+                    localStorage.setItem('ngo_gallery', JSON.stringify(galleryImages));
+                }
+
+                const imagesHtml = galleryImages.map((img, index) => `
+                    <div class="gallery-admin-item">
+                        <img src="${img}" alt="Gallery">
+                        <button class="delete-img" onclick="deletePhoto(${index})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+
+                adminGalleryGrid.innerHTML = addBtnHtml + imagesHtml;
+            }
+
+            window.addPhoto = () => {
+                const url = prompt("Enter the URL of the image:");
+                if (url && url.trim() !== '') {
+                    const galleryImages = JSON.parse(localStorage.getItem('ngo_gallery') || '[]');
+                    galleryImages.unshift(url);
+                    localStorage.setItem('ngo_gallery', JSON.stringify(galleryImages));
+                    loadGallery();
+                }
+            };
+
+            window.deletePhoto = (index) => {
+                if(confirm("Delete this photo?")) {
+                    const galleryImages = JSON.parse(localStorage.getItem('ngo_gallery') || '[]');
+                    galleryImages.splice(index, 1);
+                    localStorage.setItem('ngo_gallery', JSON.stringify(galleryImages));
+                    loadGallery();
+                }
+            };
+
             window.updateStatus = (email, newStatus) => {
                 const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
                 if (apps[email]) {
@@ -269,7 +358,7 @@
                     
                     // Add a small delay for better visual feedback
                     setTimeout(() => {
-                        loadApplications();
+                        initAdmin();
                     }, 200);
                 }
             };
@@ -279,11 +368,44 @@
                     const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
                     delete apps[email];
                     localStorage.setItem('ngo_apps', JSON.stringify(apps));
-                    loadApplications();
+                    initAdmin();
                 }
             };
 
-            loadApplications();
+            // Auth Logic
+            const adminLoginModal = document.getElementById('adminLoginModal');
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            const adminMainContent = document.getElementById('adminMainContent');
+            const loginError = document.getElementById('loginError');
+
+            if (sessionStorage.getItem('admin_auth') === 'true') {
+                adminLoginModal.style.display = 'none';
+                adminMainContent.style.display = 'flex';
+                initAdmin();
+            } else {
+                adminLoginModal.style.display = 'flex';
+                adminMainContent.style.display = 'none';
+            }
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pwd = document.getElementById('adminPassword').value;
+                if (pwd === 'admin123') {
+                    sessionStorage.setItem('admin_auth', 'true');
+                    adminLoginModal.style.display = 'none';
+                    adminMainContent.style.display = 'flex';
+                    initAdmin();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            });
+
+            function initAdmin() {
+                loadApplications();
+                loadVolunteers();
+                loadDonations();
+                loadGallery();
+            }
         });
     </script>
 </body>
