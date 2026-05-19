@@ -24,8 +24,10 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li><a href="#events">Events</a></li>
                 <li><a href="#impact">Impact</a></li>
                 <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#faq">FAQ</a></li>
                 <li><a href="#status-check">Check Status</a></li>
                 <li><a href="#contact-form" class="btn btn-primary">Join Us</a></li>
                 </ul>
@@ -123,6 +125,19 @@
             </div>
         </section>
 
+        <!-- Upcoming Events Section -->
+        <section id="events" class="events section-padding">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Upcoming <span class="highlight">Events</span></h2>
+                    <p>Join our community drives and campaigns to make a direct impact.</p>
+                </div>
+                <div class="events-grid" id="eventsGrid">
+                    <!-- JS will populate -->
+                </div>
+            </div>
+        </section>
+
         <!-- Social Impact Section -->
         <section id="impact" class="impact section-padding">
             <div class="container">
@@ -185,6 +200,30 @@
             </div>
         </section>
 
+        <!-- FAQ Section -->
+        <section id="faq" class="faq section-padding">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Frequently Asked <span class="highlight">Questions</span></h2>
+                    <p>Find answers to common questions about volunteering and donating.</p>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item">
+                        <button class="faq-question">How can I become a volunteer? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer"><p>Simply fill out the "Join Us" form below and select "Become a Volunteer". Our team will review your skills and get in touch!</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Where do my donations go? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer"><p>100% of public donations go directly to funding our on-ground projects like Project Shiksha and Health First. We maintain full transparency.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Do you offer internships or certificates? <i class="fas fa-chevron-down"></i></button>
+                        <div class="faq-answer"><p>Yes, active volunteers who complete a minimum of 40 hours receive a verified certificate of appreciation and internship letters upon request.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Gallery Section -->
         <section id="gallery" class="gallery section-padding bg-light">
             <div class="container">
@@ -209,11 +248,21 @@
                     <form class="action-form" id="mainActionForm">
                         <div class="form-group">
                             <label>Full Name</label>
-                            <input type="text" placeholder="Enter your name" required>
+                            <input type="text" id="joinName" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <label>Email Address</label>
+                                <input type="email" id="joinEmail" placeholder="Enter your email" required>
+                            </div>
+                            <div>
+                                <label>Phone Number</label>
+                                <input type="tel" id="joinPhone" placeholder="Enter your phone" required>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" placeholder="Enter your email" required>
+                            <label>City / Location</label>
+                            <input type="text" id="joinCity" placeholder="Enter your city" required>
                         </div>
                         <div class="form-group">
                             <label>How would you like to help?</label>
@@ -223,13 +272,47 @@
                                 <option value="partner">Partner with Us</option>
                             </select>
                         </div>
-                        <div class="form-group" id="donationAmountGroup" style="display: none;">
-                            <label>Donation Amount (₹)</label>
-                            <input type="number" id="donationAmount" placeholder="Enter amount" min="100">
+                        
+                        <!-- Volunteer Specific Fields -->
+                        <div id="volunteerFields" style="display: block;">
+                            <div class="form-group">
+                                <label>Primary Skill / Interest</label>
+                                <select id="volunteerSkill">
+                                    <option value="Teaching">Teaching & Education</option>
+                                    <option value="Medical">Medical / Healthcare</option>
+                                    <option value="Marketing">Marketing / Social Media</option>
+                                    <option value="General">General Support / Labor</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Availability</label>
+                                <select id="volunteerAvailability">
+                                    <option value="Weekends">Weekends Only</option>
+                                    <option value="Weekdays">Weekdays</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </div>
                         </div>
+
+                        <!-- Donor Specific Fields -->
+                        <div id="donationFields" style="display: none;">
+                            <div class="form-group">
+                                <label>Donation Amount (₹)</label>
+                                <input type="number" id="donationAmount" placeholder="Enter amount" min="100">
+                            </div>
+                            <div class="form-group">
+                                <label>Preferred Payment Method</label>
+                                <select id="paymentMethod">
+                                    <option value="UPI">UPI / QR Code</option>
+                                    <option value="Card">Credit/Debit Card</option>
+                                    <option value="NetBanking">Net Banking</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label>Message (Optional)</label>
-                            <textarea rows="4" placeholder="Tell us more..."></textarea>
+                            <textarea id="joinMessage" rows="4" placeholder="Tell us more..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-large w-100">Submit Application</button>
                     </form>
@@ -324,9 +407,9 @@
                 <h4>Quick Links</h4>
                 <ul>
                     <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About Us</a></li>
                     <li><a href="#projects">Projects</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#faq">FAQ</a></li>
                 </ul>
             </div>
             <div class="footer-contact">
@@ -334,6 +417,15 @@
                 <p><i class="fas fa-map-marker-alt"></i> 123 NGO Street, Community City, IN</p>
                 <p><i class="fas fa-phone"></i> +91 98765 43210</p>
                 <p><i class="fas fa-envelope"></i> info@inamigos.org</p>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Newsletter</h4>
+                <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">Get the latest updates on our campaigns.</p>
+                <form id="newsletterForm" style="display: flex; gap: 10px; flex-direction: column;">
+                    <input type="email" id="newsletterEmail" placeholder="Your email address" required style="padding: 10px; border-radius: 5px; border: none; width: 100%;">
+                    <button type="submit" class="btn btn-primary" style="padding: 10px;">Subscribe</button>
+                </form>
+                <p id="newsletterMsg" style="color: var(--secondary-color); font-size: 0.85rem; margin-top: 10px; display: none;">Thanks for subscribing!</p>
             </div>
         </div>
         <div class="footer-bottom text-center">

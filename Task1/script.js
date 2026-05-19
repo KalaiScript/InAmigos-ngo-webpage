@@ -95,17 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtns = document.querySelectorAll('.close-modal');
     
     const helpTypeSelect = document.getElementById('helpType');
-    const donationAmountGroup = document.getElementById('donationAmountGroup');
+    const volunteerFields = document.getElementById('volunteerFields');
+    const donationFields = document.getElementById('donationFields');
     const donationAmountInput = document.getElementById('donationAmount');
 
-    if (helpTypeSelect && donationAmountGroup) {
+    if (helpTypeSelect) {
         helpTypeSelect.addEventListener('change', (e) => {
             if (e.target.value === 'donate') {
-                donationAmountGroup.style.display = 'block';
-                if (donationAmountInput) donationAmountInput.setAttribute('required', 'true');
+                if(volunteerFields) volunteerFields.style.display = 'none';
+                if(donationFields) donationFields.style.display = 'block';
+                if(donationAmountInput) donationAmountInput.setAttribute('required', 'true');
+            } else if (e.target.value === 'volunteer') {
+                if(donationFields) donationFields.style.display = 'none';
+                if(volunteerFields) volunteerFields.style.display = 'block';
+                if(donationAmountInput) donationAmountInput.removeAttribute('required');
             } else {
-                donationAmountGroup.style.display = 'none';
-                if (donationAmountInput) donationAmountInput.removeAttribute('required');
+                if(volunteerFields) volunteerFields.style.display = 'none';
+                if(donationFields) donationFields.style.display = 'none';
+                if(donationAmountInput) donationAmountInput.removeAttribute('required');
             }
         });
     }
@@ -114,27 +121,44 @@ document.addEventListener('DOMContentLoaded', () => {
         actionForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const name = actionForm.querySelector('input[type="text"]').value;
-            const email = actionForm.querySelector('input[type="email"]').value;
+            const name = document.getElementById('joinName') ? document.getElementById('joinName').value : actionForm.querySelector('input[type="text"]').value;
+            const email = document.getElementById('joinEmail') ? document.getElementById('joinEmail').value : actionForm.querySelector('input[type="email"]').value;
+            const phone = document.getElementById('joinPhone') ? document.getElementById('joinPhone').value : '';
+            const city = document.getElementById('joinCity') ? document.getElementById('joinCity').value : '';
+            
             const type = helpTypeSelect ? helpTypeSelect.value : 'volunteer';
+            
             let amount = 0;
-            if (type === 'donate' && donationAmountInput) {
-                amount = donationAmountInput.value;
+            let paymentMethod = '';
+            let skill = '';
+            let availability = '';
+
+            if (type === 'donate') {
+                amount = donationAmountInput ? donationAmountInput.value : 0;
+                paymentMethod = document.getElementById('paymentMethod') ? document.getElementById('paymentMethod').value : '';
+            } else if (type === 'volunteer') {
+                skill = document.getElementById('volunteerSkill') ? document.getElementById('volunteerSkill').value : '';
+                availability = document.getElementById('volunteerAvailability') ? document.getElementById('volunteerAvailability').value : '';
             }
 
             const applications = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
             applications[email.toLowerCase()] = { 
                 name, 
+                phone,
+                city,
                 status: 'Pending Review',
                 type: type,
                 amount: amount,
+                paymentMethod: paymentMethod,
+                skill: skill,
+                availability: availability,
                 date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             };
             localStorage.setItem('ngo_apps', JSON.stringify(applications));
 
             if (modal) modal.style.display = 'flex';
             actionForm.reset();
-            if (donationAmountGroup) donationAmountGroup.style.display = 'none';
+            if (helpTypeSelect) helpTypeSelect.dispatchEvent(new Event('change'));
         });
     }
 
@@ -189,6 +213,67 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusError.style.display = 'block';
             }
         });
+    }
+
+    // FAQ Accordion Logic
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const answer = question.nextElementSibling;
+            const isActive = question.classList.contains('active');
+            
+            // Close all
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                a.style.maxHeight = null;
+                a.previousElementSibling.classList.remove('active');
+            });
+
+            if (!isActive) {
+                question.classList.add('active');
+                answer.style.maxHeight = answer.scrollHeight + "px";
+            }
+        });
+    });
+
+    // Newsletter Logic
+    const newsletterForm = document.getElementById('newsletterForm');
+    const newsletterMsg = document.getElementById('newsletterMsg');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('newsletterEmail').value;
+            const subs = JSON.parse(localStorage.getItem('ngo_subs') || '[]');
+            if (!subs.includes(email)) {
+                subs.push(email);
+                localStorage.setItem('ngo_subs', JSON.stringify(subs));
+            }
+            newsletterForm.reset();
+            newsletterMsg.style.display = 'block';
+            setTimeout(() => { newsletterMsg.style.display = 'none'; }, 3000);
+        });
+    }
+
+    // Dynamic Events Rendering
+    const eventsGrid = document.getElementById('eventsGrid');
+    if (eventsGrid) {
+        let events = JSON.parse(localStorage.getItem('ngo_events') || '[]');
+        if (events.length === 0) {
+            events = [
+                { title: 'Mega Blood Donation Drive', date: '25 May 2026', location: 'City Center Hospital', desc: 'Join hands to save lives. Blood donation camps set up across the city.' },
+                { title: 'Coastal Cleanup Campaign', date: '02 Jun 2026', location: 'Marina Beach', desc: 'Help us clear plastic waste and preserve marine life.' }
+            ];
+            localStorage.setItem('ngo_events', JSON.stringify(events));
+        }
+
+        eventsGrid.innerHTML = events.map(ev => `
+            <div class="event-card">
+                <span class="event-date"><i class="far fa-calendar-alt"></i> ${ev.date}</span>
+                <h3>${ev.title}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${ev.location}</p>
+                <p>${ev.desc}</p>
+                <a href="#contact-form" class="btn btn-outline btn-trigger" data-type="volunteer">Register Now</a>
+            </div>
+        `).join('');
     }
 
     // Dynamic Gallery Rendering
