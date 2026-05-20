@@ -42,7 +42,7 @@ You only need a modern web browser to view this project locally.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/InAmigos-ngo-webpage.git
+   git clone https://github.com/KalaiScript/InAmigos-ngo-webpage.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -80,7 +80,7 @@ Contributions are what make the open-source community such an amazing place to l
 * Phone: +91 98765 43210
 * Address: 123 NGO Street, Community City, IN
 
-Project Link: [https://github.com/your-username/InAmigos-ngo-webpage](https://github.com/your-username/InAmigos-ngo-webpage)
+Project Link: [https://github.com/KalaiScript/InAmigos-ngo-webpage](https://github.com/KalaiScript/InAmigos-ngo-webpage)
 
 ---
 *Built with ❤️ for a better tomorrow.*
