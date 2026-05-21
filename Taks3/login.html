@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Navigator | Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="hero-bg-elements">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-box reveal active">
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">A I &nbsp; C A R E E R</span>
+            </div>
+            <h2 class="display-serif" style="text-align: center; margin-bottom: 2rem; font-family: 'Orbitron'; font-size: 1.2rem; color: var(--primary);">Secure Access Portal</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Terminal Username</label>
+                    <input type="text" id="username" placeholder="admin_core" required>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label>Access Key</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn primary" style="width: 100%; margin-top: 2rem; padding: 1rem;">Initialize Login</button>
+            </form>
+            <p id="loginError" style="color: #ff4d4d; font-size: 0.8rem; margin-top: 1rem; text-align: center; display: none;">Invalid access credentials. Access denied.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Simple mock login
+            if (user === 'admin' && pass === '1234') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

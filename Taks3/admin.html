@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Navigator | Management Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-page">
+    <header id="header">
+        <nav class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">A I &nbsp; C A R E E R</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Live Site</a></li>
+                <li><a href="#stats" class="admin-nav-link active" data-section="stats">Statistics</a></li>
+                <li><a href="#messages" class="admin-nav-link" data-section="messages">Messages</a></li>
+                <li><a href="#settings" class="admin-nav-link" data-section="settings">Settings</a></li>
+            </ul>
+            <div class="admin-user">
+                <span>Admin User</span>
+                <div class="user-avatar"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Statistics Section -->
+        <section id="stats" class="admin-section active">
+            <div class="section-header reveal">
+                <h2>Control Panel</h2>
+                <p>Real-time insights from your AI Career ecosystem.</p>
+            </div>
+            
+            <div class="admin-stats-grid">
+                <div class="stat-card reveal">
+                    <span class="stat-label">Total Users</span>
+                    <span class="stat-value">12,482</span>
+                    <span class="stat-trend up">+14% this month</span>
+                </div>
+                <div class="stat-card reveal">
+                    <span class="stat-label">AI Analyses</span>
+                    <span class="stat-value">84,921</span>
+                    <span class="stat-trend up">+22% this month</span>
+                </div>
+                <div class="stat-card reveal">
+                    <span class="stat-label">System Health</span>
+                    <span class="stat-value">99.9%</span>
+                    <span class="stat-trend">Optimal</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section id="messages" class="admin-section">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Recent Transmissions</h2>
+                <button class="btn primary btn-small" id="newTransmission">New Manual Entry</button>
+            </div>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messageBody">
+                        <tr>
+                            <td>Alex Johnson</td>
+                            <td>Pathfinder Feedback</td>
+                            <td><span class="badge active">New</span></td>
+                            <td><button class="btn-small view-message" data-sender="Alex Johnson" data-content="Pathfinder identified exactly what I needed. Great tool!">View</button></td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Miller</td>
+                            <td>Partnership Inquiry</td>
+                            <td><span class="badge">Read</span></td>
+                            <td><button class="btn-small view-message" data-sender="Sarah Miller" data-content="Interested in integrating your AI with our university portal.">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- View Modal -->
+        <div id="viewModal" class="modal">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <h2 id="modalSender" class="display-serif" style="color: var(--primary); margin-bottom: 1rem;"></h2>
+                <hr style="border: none; border-top: 1px solid var(--glass); margin-bottom: 1.5rem;">
+                <p id="modalBody" style="font-size: 1.1rem; color: var(--text-main);"></p>
+                <button class="btn primary" style="margin-top: 2rem; width: 100%;" onclick="document.getElementById('viewModal').classList.remove('active')">Close Transmission</button>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <section id="settings" class="admin-section">
+            <div class="section-header">
+                <h2>System Settings</h2>
+            </div>
+            <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="about-card">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Core Configuration</h3>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">AI Model Endpoint</label>
+                        <input type="text" value="https://api.aicareer.io/v4" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass); color: white; border-radius: 4px;">
+                    </div>
+                    <div class="form-group" style="margin-top: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">Processing Speed</label>
+                        <select style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass); color: white; border-radius: 4px;">
+                            <option>High Performance</option>
+                            <option>Balanced</option>
+                            <option>Eco Mode</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <h3 style="color: var(--secondary); margin-bottom: 1.5rem;">Security & Access</h3>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">Admin API Key</label>
+                        <input type="password" value="••••••••••••••••" style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--glass); color: white; border-radius: 4px;">
+                    </div>
+                    <button class="btn primary" style="margin-top: 1.5rem; width: 100%; padding: 0.8rem;">Save Changes</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="hero-bg-elements">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
