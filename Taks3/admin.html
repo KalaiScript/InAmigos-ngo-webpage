@@ -6,6 +6,7 @@
     <title>AI Career Navigator | Management Portal</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="admin-page">
     <header id="header">
@@ -52,6 +53,10 @@
                     <span class="stat-trend">Optimal</span>
                 </div>
             </div>
+            
+            <div class="chart-container reveal">
+                <canvas id="usageChart"></canvas>
+            </div>
         </section>
 
         <!-- Messages Section -->
@@ -71,18 +76,7 @@
                         </tr>
                     </thead>
                     <tbody id="messageBody">
-                        <tr>
-                            <td>Alex Johnson</td>
-                            <td>Pathfinder Feedback</td>
-                            <td><span class="badge active">New</span></td>
-                            <td><button class="btn-small view-message" data-sender="Alex Johnson" data-content="Pathfinder identified exactly what I needed. Great tool!">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>Sarah Miller</td>
-                            <td>Partnership Inquiry</td>
-                            <td><span class="badge">Read</span></td>
-                            <td><button class="btn-small view-message" data-sender="Sarah Miller" data-content="Interested in integrating your AI with our university portal.">View</button></td>
-                        </tr>
+                        <!-- Messages dynamically populated by JS -->
                     </tbody>
                 </table>
             </div>
