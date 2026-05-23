@@ -323,19 +323,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. Back to Top Button
-    const backToTopBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            if (backToTopBtn) backToTopBtn.style.display = 'block';
-        } else {
-            if (backToTopBtn) backToTopBtn.style.display = 'none';
-        }
-    });
+    // 7. Visitor Counter
+    const visitorCountEl = document.getElementById('visitorCount');
+    if (visitorCountEl) {
+        let visits = parseInt(localStorage.getItem('ngo_visits') || '0');
+        visits++;
+        localStorage.setItem('ngo_visits', visits.toString());
 
-    if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Animate the count
+        let current = 0;
+        const step = Math.max(1, Math.floor(visits / 60));
+        const counterInterval = setInterval(() => {
+            current += step;
+            if (current >= visits) {
+                current = visits;
+                clearInterval(counterInterval);
+            }
+            visitorCountEl.textContent = current.toLocaleString();
+        }, 20);
+    }
+
+    // 8. Volunteer Spotlight Carousel
+    const spotlightCards = document.querySelectorAll('.spotlight-card');
+    const spotlightDots = document.querySelectorAll('.spotlight-dots .dot');
+    let spotlightIndex = 0;
+
+    function showSpotlight(index) {
+        spotlightCards.forEach(c => c.classList.remove('active'));
+        spotlightDots.forEach(d => d.classList.remove('active'));
+        if (spotlightCards[index]) spotlightCards[index].classList.add('active');
+        if (spotlightDots[index]) spotlightDots[index].classList.add('active');
+    }
+
+    if (spotlightCards.length > 0) {
+        // Auto-rotate every 4 seconds
+        setInterval(() => {
+            spotlightIndex = (spotlightIndex + 1) % spotlightCards.length;
+            showSpotlight(spotlightIndex);
+        }, 4000);
+
+        // Click dots to navigate
+        spotlightDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                spotlightIndex = parseInt(dot.getAttribute('data-index'));
+                showSpotlight(spotlightIndex);
+            });
         });
     }
 });

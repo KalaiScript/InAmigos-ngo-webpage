@@ -72,6 +72,9 @@
             <header class="admin-header">
                 <h1 id="pageTitle">Admin <span class="highlight">Dashboard</span></h1>
                 <div class="admin-user">
+                    <button id="adminThemeToggle" class="admin-theme-btn" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <span>Welcome, Admin</span>
                     <i class="fas fa-user-circle"></i>
                 </div>
@@ -98,9 +101,15 @@
                 </div>
 
                 <div class="admin-table-container">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                         <h3><i class="fas fa-history" style="margin-right: 10px; color: var(--primary);"></i> Recent Activity</h3>
-                        <button id="exportCsvBtn" style="padding: 8px 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;"><i class="fas fa-file-csv"></i> Export Data</button>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="admin-search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="adminSearchInput" placeholder="Search by name or email...">
+                            </div>
+                            <button id="exportCsvBtn" class="btn-export"><i class="fas fa-file-csv"></i> Export Data</button>
+                        </div>
                     </div>
                     <div style="width: 100%; max-width: 600px; margin: 0 auto 30px;">
                         <canvas id="donationChart"></canvas>
@@ -118,6 +127,14 @@
                             <!-- JS will populate -->
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Activity Log Timeline -->
+                <div class="admin-table-container" style="margin-top: 30px;">
+                    <h3><i class="fas fa-stream" style="margin-right: 10px; color: var(--primary);"></i> Activity Log</h3>
+                    <div class="activity-timeline" id="activityTimeline">
+                        <!-- JS will populate -->
+                    </div>
                 </div>
             </section>
 
@@ -617,6 +634,96 @@
                 }
             });
 
+            // Search / Filter Logic
+            const searchInput = document.getElementById('adminSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.toLowerCase();
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(query) ? '' : 'none';
+                    });
+                });
+            }
+
+            // Activity Log
+            function loadActivityLog() {
+                const timeline = document.getElementById('activityTimeline');
+                if (!timeline) return;
+
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                const subs = JSON.parse(localStorage.getItem('ngo_subs') || '[]');
+                const activities = [];
+
+                Object.entries(apps).forEach(([email, app]) => {
+                    let icon = 'fas fa-user-plus';
+                    let color = '#4361ee';
+                    let label = 'New Application';
+                    if (app.type === 'donate') {
+                        icon = 'fas fa-hand-holding-heart';
+                        color = '#28a745';
+                        label = `Donation of ₹${app.amount || 0}`;
+                    } else if (app.status === 'Onboarding') {
+                        icon = 'fas fa-check-circle';
+                        color = '#4cc9f0';
+                        label = 'Approved & Onboarding';
+                    }
+                    activities.push({
+                        icon, color, label,
+                        name: app.name,
+                        date: app.date || 'Recently',
+                        detail: email
+                    });
+                });
+
+                subs.forEach(sub => {
+                    activities.push({
+                        icon: 'fas fa-envelope',
+                        color: '#f8961e',
+                        label: 'Newsletter Subscription',
+                        name: sub,
+                        date: 'Recently',
+                        detail: sub
+                    });
+                });
+
+                if (activities.length === 0) {
+                    timeline.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 30px;">No activity recorded yet.</p>';
+                    return;
+                }
+
+                timeline.innerHTML = activities.slice(0, 8).map(a => `
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: ${a.color}20; color: ${a.color};">
+                            <i class="${a.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p><strong>${a.name}</strong> — ${a.label}</p>
+                            <span class="activity-time"><i class="far fa-clock"></i> ${a.date}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Admin Dark Mode
+            const adminThemeBtn = document.getElementById('adminThemeToggle');
+            const adminThemeIcon = adminThemeBtn ? adminThemeBtn.querySelector('i') : null;
+
+            if (localStorage.getItem('admin_dark') === 'true') {
+                document.body.classList.add('admin-dark');
+                if (adminThemeIcon) adminThemeIcon.className = 'fas fa-sun';
+            }
+
+            if (adminThemeBtn) {
+                adminThemeBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('admin-dark');
+                    const isDark = document.body.classList.contains('admin-dark');
+                    if (adminThemeIcon) adminThemeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                    localStorage.setItem('admin_dark', isDark);
+                });
+            }
+
             function initAdmin() {
                 loadApplications();
                 loadVolunteers();
@@ -624,6 +731,7 @@
                 loadGallery();
                 loadEvents();
                 loadSubscribers();
+                loadActivityLog();
                 setTimeout(renderChart, 100);
             }
         });
