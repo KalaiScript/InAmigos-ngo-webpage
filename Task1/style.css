@@ -703,9 +703,7 @@ footer {
     .hero h1 { font-size: 3rem; }
     .about-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 768px) {
+    
     .nav-links {
         display: none;
         flex-direction: column;
@@ -726,6 +724,9 @@ footer {
     .menu-toggle {
         display: block;
     }
+}
+
+@media (max-width: 768px) {
     .hero h1 { font-size: 2.5rem; }
     .hero p { font-size: 1.1rem; }
     .footer-grid { grid-template-columns: 1fr; }
