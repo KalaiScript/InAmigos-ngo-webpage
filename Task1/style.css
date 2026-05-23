@@ -149,6 +149,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    position: relative;
 }
 
 .logo {
@@ -559,12 +560,7 @@ footer {
     transform: scale(1.1);
 }
 
-/* --- Mobile Nav Enhancement --- */
-.nav-links.active {
-    display: flex !important;
-    animation: slideDown 0.3s ease-in-out;
-}
-
+/* --- Mobile Nav Animation --- */
 @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -703,9 +699,9 @@ footer {
     .hero h1 { font-size: 3rem; }
     .about-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
-    
+
     .nav-links {
-        display: none;
+        display: none !important;
         flex-direction: column;
         position: absolute;
         top: 80px;
@@ -713,13 +709,43 @@ footer {
         width: 100%;
         background-color: var(--white);
         padding: 20px 0;
-        box-shadow: var(--shadow);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         z-index: 999;
-        gap: 20px;
+        gap: 0;
         text-align: center;
+        align-items: center;
+    }
+    .nav-links li {
+        width: 100%;
+    }
+    .nav-links li a {
+        display: block;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: background-color 0.2s ease;
+    }
+    .nav-links li a:hover {
+        background-color: rgba(0, 86, 179, 0.05);
+    }
+    .nav-links li:last-child a {
+        border-bottom: none;
+        margin: 10px 20px;
+        width: auto;
+    }
+    .nav-links.active {
+        display: flex !important;
+        flex-direction: column;
+        animation: slideDown 0.3s ease-in-out;
     }
     :root.dark-mode .nav-links {
         background-color: #1f1f1f;
+    }
+    :root.dark-mode .nav-links li a {
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+    :root.dark-mode .nav-links li a:hover {
+        background-color: rgba(255, 255, 255, 0.05);
     }
     .menu-toggle {
         display: block;
