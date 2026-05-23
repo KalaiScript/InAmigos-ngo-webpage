@@ -707,7 +707,21 @@ footer {
 
 @media (max-width: 768px) {
     .nav-links {
-        display: none; /* Mobile menu logic would go here */
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background-color: var(--white);
+        padding: 20px 0;
+        box-shadow: var(--shadow);
+        z-index: 999;
+        gap: 20px;
+        text-align: center;
+    }
+    :root.dark-mode .nav-links {
+        background-color: #1f1f1f;
     }
     .menu-toggle {
         display: block;

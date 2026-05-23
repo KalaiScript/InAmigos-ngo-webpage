@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Scroll Reveal Animation
     const revealElements = document.querySelectorAll('.reveal');
-    
+
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             // Basic UI feedback
             const btn = contactForm.querySelector('button');
             const originalText = btn.innerText;
-            
+
             btn.innerText = 'Transmitting Data...';
             btn.disabled = true;
             btn.style.opacity = '0.7';
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Mobile Menu Toggle (Simplified)
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
@@ -172,21 +172,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pfAnalyzeBtn && pfInput && pfOutput) {
         const careers = [
-            "Data Scientist", "Machine Learning Engineer", "Prompt Engineer", 
-            "AI Ethicist", "Robotics Programmer", "NLP Specialist", 
+            "Data Scientist", "Machine Learning Engineer", "Prompt Engineer",
+            "AI Ethicist", "Robotics Programmer", "NLP Specialist",
             "Predictive Analyst", "AI Product Manager", "Computer Vision Engineer"
         ];
 
         pfAnalyzeBtn.addEventListener('click', () => {
             const val = pfInput.value.trim();
-            if(!val) return;
-            
+            if (!val) return;
+
             pfAnalyzeBtn.disabled = true;
             pfOutput.innerHTML = '<div class="typing-effect">Analyzing neural pathways...</div>';
-            
+
             setTimeout(() => {
                 pfOutput.innerHTML = '<div class="typing-effect">Cross-referencing global job markets...</div>';
-                
+
                 setTimeout(() => {
                     const randomCareer = careers[Math.floor(Math.random() * careers.length)];
                     pfOutput.innerHTML = `
@@ -209,9 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('messageBody');
         if (tbody) {
             let messages = JSON.parse(localStorage.getItem('adminMessages') || '[]');
-            
+
             // Add some default messages if empty for showcase
-            if(messages.length === 0) {
+            if (messages.length === 0) {
                 messages = [
                     { id: 1, sender: "Alex Johnson", subject: "Pathfinder Feedback", content: "Pathfinder identified exactly what I needed. Great tool!", status: "New" },
                     { id: 2, sender: "Sarah Miller", subject: "Partnership Inquiry", content: "Interested in integrating your AI with our university portal.", status: "Read" }
@@ -274,4 +274,4 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    }
+    });
