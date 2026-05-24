@@ -21,9 +21,10 @@
                 <li><a href="#messages" class="admin-nav-link" data-section="messages">Messages</a></li>
                 <li><a href="#settings" class="admin-nav-link" data-section="settings">Settings</a></li>
             </ul>
-            <div class="admin-user">
+            <div class="admin-user" style="display: flex; align-items: center; gap: 10px;">
                 <span>Admin User</span>
                 <div class="user-avatar"></div>
+                <button id="logoutBtn" class="btn-small" style="margin-left: 10px; border-color: #ff4d4d; color: #ff4d4d;">Logout</button>
             </div>
         </nav>
     </header>
@@ -63,7 +64,10 @@
         <section id="messages" class="admin-section">
             <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Recent Transmissions</h2>
-                <button class="btn primary btn-small" id="newTransmission">New Manual Entry</button>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn secondary btn-small" id="exportCsv">Export CSV</button>
+                    <button class="btn primary btn-small" id="newTransmission">New Manual Entry</button>
+                </div>
             </div>
             <div class="admin-table-container">
                 <table class="admin-table">

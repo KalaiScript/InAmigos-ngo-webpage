@@ -84,10 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Mobile Menu Toggle (Simplified)
     const menuToggle = document.querySelector('.menu-toggle');
     const navLinks = document.querySelector('.nav-links');
+    const navItems = document.querySelectorAll('.nav-links a');
 
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking a link
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
         });
     }
 
@@ -189,11 +199,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 setTimeout(() => {
                     const randomCareer = careers[Math.floor(Math.random() * careers.length)];
+                    const matchScore = (Math.random() * 15 + 84).toFixed(1);
                     pfOutput.innerHTML = `
                         <div>
                             <span style="color: var(--text-muted); font-size: 0.9rem;">Optimal Alignment:</span><br>
                             <span style="font-size: 1.5rem; text-transform: uppercase; color: var(--primary); text-shadow: 0 0 10px var(--primary);">${randomCareer}</span><br>
-                            <span style="color: var(--text-main); font-size: 0.85rem; margin-top: 10px; display: inline-block;">Match Confidence: ${(Math.random() * 15 + 84).toFixed(1)}%</span>
+                            <span style="color: var(--text-main); font-size: 0.85rem; margin-top: 10px; display: inline-block;">Match Confidence: ${matchScore}%</span><br>
+                            <button class="btn-small" style="margin-top: 15px;" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Get Career Roadmap</button>
                         </div>
                     `;
                     pfAnalyzeBtn.disabled = false;
@@ -274,4 +286,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-    });
+        // 12. Logout Logic
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        });
+    }
+
+    // 13. CSV Export Logic
+    const exportCsvBtn = document.getElementById('exportCsv');
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', () => {
+            let messages = JSON.parse(localStorage.getItem('adminMessages') || '[]');
+            if (messages.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,Sender,Email,Subject,Content,Status,Date\n";
+            
+            messages.forEach(msg => {
+                let email = msg.email ? msg.email.replace(/"/g, '""') : '';
+                let content = msg.content ? msg.content.replace(/"/g, '""') : '';
+                let row = `${msg.id},"${msg.sender}","${email}","${msg.subject}","${content}","${msg.status}","${msg.date || ''}"`;
+                csvContent += row + "\n";
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "transmissions.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+});
