@@ -1,65 +1,47 @@
 # 🌍 Task 1: InAmigos NGO Web Platform
 
-Welcome to **Task 1** of the InAmigos Foundation Internship! This project focuses on building a professional, responsive, and aesthetically pleasing static web application tailored for a Non-Governmental Organization (NGO). 
-
-<div align="center">
-  <img src="./assets/hero_section_ngo_1779598405652.png" alt="NGO Platform Hero Section" width="800"/>
-</div>
+Welcome to **Task 1** of the InAmigos Foundation Internship! This project focuses on building a professional, responsive, and aesthetically pleasing static web application tailored for a Non-Governmental Organization (NGO).
 
 ---
 
-## 🎯 Project Focus
+## 🎯 Project Overview
 
-The primary objective of this task is to demonstrate proficiency in core web technologies (HTML, CSS, JavaScript) by creating a comprehensive web presence for an NGO. The platform includes public-facing pages for community engagement and a secure administrative dashboard for internal management.
+The primary objective of this task is to demonstrate proficiency in core web technologies (HTML, CSS, JavaScript) by creating a comprehensive web presence for the **InAmigos Foundation**. The platform serves as the digital face of the organization, highlighting its mission, impact, and ways for the community to get involved.
 
-### Key Features
-- **Responsive Design**: Ensures a seamless experience across desktop, tablet, and mobile devices.
-- **Event Management Layout**: A dedicated section for upcoming charity events and volunteer opportunities.
-- **Admin Dashboard**: A customized layout for managing platform data and analytics.
-- **Professional Aesthetics**: Utilizes modern UI trends like glassmorphism, clean typography, and a harmonious color palette.
+### 🌟 Key Features & Sections
 
----
+Based on the actual project implementation, the web platform includes the following key areas:
 
-## 🖼️ Platform Gallery (5 Project Images)
+#### 1. Navigation & Theming
+- **Dynamic Navbar**: Includes links to Home, About, Projects, Events, Impact, Gallery, FAQ, and Check Status.
+- **Call to Action**: A prominent "Join Us" button for immediate volunteer or donor engagement.
+- **Theme Toggle**: Built-in Dark/Light mode toggle (moon icon) for improved accessibility and user preference.
 
-Here is a visual walkthrough of the key components developed for this task:
+#### 2. Hero Section
+- **Inspiring Tagline**: "Empowering Communities, Transforming Lives".
+- **Mission Statement**: Focuses on creating a sustainable and equitable world through grassroots initiatives and community-driven change.
+- **Quick Actions**: "View Our Projects" and "Learn More" buttons to guide user navigation immediately upon landing.
 
-### 1. The Hero Section (Community First)
-A welcoming landing page that highlights the NGO's mission and encourages immediate engagement.
-<div align="center">
-  <img src="./assets/hero_section_ngo_1779598405652.png" alt="Hero Section" width="700"/>
-</div>
+#### 3. About InAmigos
+- **Our Story**: Details the organization's history, starting as a local student initiative in 2020 and growing into a structured NGO dedicated to education, healthcare, and environmental sustainability.
+- **Core Values**: 
+  - **Compassion**: Leading with empathy in every initiative.
+  - **Transparency**: Openness in all our operations and fund usage.
+  - **Sustainability**: Focusing on long-term growth rather than short-term fixes.
 
-### 2. Event Discovery & Registration
-An intuitive layout for users to find events, read details, and register as volunteers.
-<div align="center">
-  <img src="./assets/events_management_1779598434445.png" alt="Events Management" width="700"/>
-</div>
+#### 4. Impact & Success Stories
+- **Key Metrics**: Highlights significant achievements such as 10,000+ Lives Impacted, 500+ Active Volunteers, 50+ Villages Reached, and 25+ Successful Campaigns.
+- **Testimonials**: Features success stories from student beneficiaries and volunteers, adding a personal and trustworthy touch to the organization's efforts.
 
-### 3. Administrative Control Center
-A sophisticated dark-mode dashboard providing administrators with crucial metrics and quick actions.
-<div align="center">
-  <img src="./assets/admin_dashboard_1779598454541.png" alt="Admin Dashboard" width="700"/>
-</div>
-
-### 4. Streamlined Donation Process
-A secure and user-friendly donation form supporting various payment methods and frequencies.
-<div align="center">
-  <img src="./assets/donation_section_1779598469669.png" alt="Donation Portal" width="700"/>
-</div>
-
-### 5. Newsletter & Community Contact
-A vibrant interface designed to capture leads, answer queries, and grow the NGO's subscriber base.
-<div align="center">
-  <img src="./assets/contact_us_1779598486070.png" alt="Contact Us Section" width="700"/>
-</div>
+#### 5. Community Gallery
+- A visual showcase of the organization's on-ground work, capturing moments of change, community engagement, and volunteer efforts through a clean image grid.
 
 ---
 
 ## 🛠️ Technology Stack
 - **HTML5**: Semantic structure and accessibility.
-- **CSS3**: Custom styling, flexbox/grid layouts, and responsive media queries.
-- **Vanilla JavaScript**: DOM manipulation, interactive components, and form validation.
+- **CSS3**: Custom styling, flexbox/grid layouts, responsive media queries, and dark mode implementation.
+- **Vanilla JavaScript**: DOM manipulation, interactive components (like theme toggling), and dynamic content rendering.
 
 ## 🚀 How to Run
 
