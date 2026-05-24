@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    }
         // 12. Logout Logic
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
