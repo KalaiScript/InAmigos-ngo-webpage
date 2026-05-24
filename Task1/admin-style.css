@@ -617,3 +617,35 @@ body.admin-dark .admin-modal-content {
 body.admin-dark .admin-sidebar {
     background: #0a0a14;
 }
+
+/* --- Floating WhatsApp Button --- */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 99;
+    width: 60px;
+    height: 60px;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    animation: whatsappPulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.12);
+    box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+    color: white;
+}
+
+@keyframes whatsappPulse {
+    0% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(37, 211, 102, 0.6); }
+    100% { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); }
+}
