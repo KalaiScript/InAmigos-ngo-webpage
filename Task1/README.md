@@ -18,11 +18,17 @@ Based on the actual project implementation, the web platform includes the follow
 - **Theme Toggle**: Built-in Dark/Light mode toggle (moon icon) for improved accessibility and user preference.
 
 #### 2. Hero Section
+<div align="center">
+  <img src="./assets/hero.png" alt="InAmigos Hero Section" width="800"/>
+</div>
 - **Inspiring Tagline**: "Empowering Communities, Transforming Lives".
 - **Mission Statement**: Focuses on creating a sustainable and equitable world through grassroots initiatives and community-driven change.
 - **Quick Actions**: "View Our Projects" and "Learn More" buttons to guide user navigation immediately upon landing.
 
 #### 3. About InAmigos
+<div align="center">
+  <img src="./assets/about.png" alt="About InAmigos Section" width="800"/>
+</div>
 - **Our Story**: Details the organization's history, starting as a local student initiative in 2020 and growing into a structured NGO dedicated to education, healthcare, and environmental sustainability.
 - **Core Values**: 
   - **Compassion**: Leading with empathy in every initiative.
@@ -30,10 +36,16 @@ Based on the actual project implementation, the web platform includes the follow
   - **Sustainability**: Focusing on long-term growth rather than short-term fixes.
 
 #### 4. Impact & Success Stories
+<div align="center">
+  <img src="./assets/impact.png" alt="Impact and Success Stories" width="800"/>
+</div>
 - **Key Metrics**: Highlights significant achievements such as 10,000+ Lives Impacted, 500+ Active Volunteers, 50+ Villages Reached, and 25+ Successful Campaigns.
 - **Testimonials**: Features success stories from student beneficiaries and volunteers, adding a personal and trustworthy touch to the organization's efforts.
 
 #### 5. Community Gallery
+<div align="center">
+  <img src="./assets/gallery.png" alt="Community Gallery" width="800"/>
+</div>
 - A visual showcase of the organization's on-ground work, capturing moments of change, community engagement, and volunteer efforts through a clean image grid.
 
 ---
