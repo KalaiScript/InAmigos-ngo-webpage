@@ -464,6 +464,38 @@ body.admin-body {
     overflow-y: auto;
 }
 
+/* --- Admin Stories Management Grid --- */
+.admin-stories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.admin-story-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all var(--transition-speed);
+}
+
+.admin-story-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.1);
+}
+
+.admin-story-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+body.admin-dark .admin-story-card {
+    background: #1e1e2d;
+    border-color: #2a2a3a;
+}
+
 /* --- Responsive --- */
 
 /* Tablet: collapse sidebar to icon-only */
@@ -556,6 +588,9 @@ body.admin-body {
     .gallery-management-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
+    }
+    .admin-stories-grid {
+        grid-template-columns: 1fr;
     }
 }
 

@@ -276,6 +276,35 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
+    // Dynamic Success Stories / Testimonials Rendering
+    const testimonialGrid = document.getElementById('testimonialGrid');
+    if (testimonialGrid) {
+        let stories = JSON.parse(localStorage.getItem('ngo_stories') || 'null');
+        if (!stories) {
+            stories = [
+                { name: "Aarti K.", role: "Student Beneficiary", quote: "Project Shiksha completely changed my life. I am now pursuing my higher education and dream of becoming a teacher to help others.", image: "https://randomuser.me/api/portraits/women/44.jpg" },
+                { name: "Ravi S.", role: "Volunteer", quote: "Volunteering with Health First gave me an opportunity to give back to my community. It's incredibly fulfilling.", image: "https://randomuser.me/api/portraits/men/32.jpg" }
+            ];
+            localStorage.setItem('ngo_stories', JSON.stringify(stories));
+        }
+
+        if (stories.length > 0) {
+            testimonialGrid.innerHTML = stories.map(s => `
+                <div class="testimonial-card">
+                    <i class="fas fa-quote-left quote-icon"></i>
+                    <p>"${s.quote}"</p>
+                    <div class="testimonial-author">
+                        <img src="${s.image}" alt="${s.name}">
+                        <div>
+                            <h4>${s.name}</h4>
+                            <span>${s.role}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
     // Dynamic Gallery Rendering
     const galleryGrid = document.getElementById('galleryGrid');
     if (galleryGrid) {
@@ -343,32 +372,73 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 20);
     }
 
-    // 8. Volunteer Spotlight Carousel
-    const spotlightCards = document.querySelectorAll('.spotlight-card');
-    const spotlightDots = document.querySelectorAll('.spotlight-dots .dot');
-    let spotlightIndex = 0;
+    // 8. Dynamic Volunteer Spotlight Carousel
+    const spotlightTrack = document.getElementById('spotlightTrack');
+    const spotlightDotsContainer = document.getElementById('spotlightDots');
 
-    function showSpotlight(index) {
-        spotlightCards.forEach(c => c.classList.remove('active'));
-        spotlightDots.forEach(d => d.classList.remove('active'));
-        if (spotlightCards[index]) spotlightCards[index].classList.add('active');
-        if (spotlightDots[index]) spotlightDots[index].classList.add('active');
-    }
+    if (spotlightTrack && spotlightDotsContainer) {
+        let spotlights = JSON.parse(localStorage.getItem('ngo_spotlights') || 'null');
+        if (!spotlights) {
+            spotlights = [
+                { name: "Priya Sharma", badge: "Volunteer of the Month", role: "Teaching & Education", quote: "Seeing children's faces light up when they learn something new makes every moment worth it.", image: "https://randomuser.me/api/portraits/women/65.jpg", stat1: "120+", stat1Label: "Hours", stat2: "45", stat2Label: "Students", stat3: "8", stat3Label: "Months" },
+                { name: "Arjun Patel", badge: "Community Hero", role: "Medical / Healthcare", quote: "Every health camp we organize brings essential care to those who need it the most.", image: "https://randomuser.me/api/portraits/men/75.jpg", stat1: "200+", stat1Label: "Hours", stat2: "300", stat2Label: "Patients", stat3: "12", stat3Label: "Months" },
+                { name: "Sneha Reddy", badge: "Rising Star", role: "Marketing / Social Media", quote: "Sharing our stories online has helped us reach thousands and inspire new volunteers.", image: "https://randomuser.me/api/portraits/women/45.jpg", stat1: "80+", stat1Label: "Hours", stat2: "5K", stat2Label: "Reach", stat3: "6", stat3Label: "Months" }
+            ];
+            localStorage.setItem('ngo_spotlights', JSON.stringify(spotlights));
+        }
 
-    if (spotlightCards.length > 0) {
-        // Auto-rotate every 4 seconds
-        setInterval(() => {
-            spotlightIndex = (spotlightIndex + 1) % spotlightCards.length;
-            showSpotlight(spotlightIndex);
-        }, 4000);
+        // Render spotlight cards
+        if (spotlights.length > 0) {
+            spotlightTrack.innerHTML = spotlights.map((s, i) => `
+                <div class="spotlight-card ${i === 0 ? 'active' : ''}">
+                    <div class="spotlight-avatar">
+                        <img src="${s.image}" alt="${s.name}">
+                    </div>
+                    <div class="spotlight-info">
+                        <span class="spotlight-badge"><i class="fas fa-star"></i> ${s.badge}</span>
+                        <h3>${s.name}</h3>
+                        <p class="spotlight-role">${s.role}</p>
+                        <p class="spotlight-quote">"${s.quote}"</p>
+                        <div class="spotlight-stats">
+                            <div><strong>${s.stat1}</strong><span>${s.stat1Label}</span></div>
+                            <div><strong>${s.stat2}</strong><span>${s.stat2Label}</span></div>
+                            <div><strong>${s.stat3}</strong><span>${s.stat3Label}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
 
-        // Click dots to navigate
-        spotlightDots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                spotlightIndex = parseInt(dot.getAttribute('data-index'));
+            // Render dots
+            spotlightDotsContainer.innerHTML = spotlights.map((_, i) =>
+                `<span class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></span>`
+            ).join('');
+
+            // Carousel logic
+            const cards = spotlightTrack.querySelectorAll('.spotlight-card');
+            const dots = spotlightDotsContainer.querySelectorAll('.dot');
+            let spotlightIndex = 0;
+
+            function showSpotlight(index) {
+                cards.forEach(c => c.classList.remove('active'));
+                dots.forEach(d => d.classList.remove('active'));
+                if (cards[index]) cards[index].classList.add('active');
+                if (dots[index]) dots[index].classList.add('active');
+            }
+
+            // Auto-rotate every 4 seconds
+            setInterval(() => {
+                spotlightIndex = (spotlightIndex + 1) % cards.length;
                 showSpotlight(spotlightIndex);
+            }, 4000);
+
+            // Click dots to navigate
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    spotlightIndex = parseInt(dot.getAttribute('data-index'));
+                    showSpotlight(spotlightIndex);
+                });
             });
-        });
+        }
     }
 });
 

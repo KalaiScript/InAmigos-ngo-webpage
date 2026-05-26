@@ -58,6 +58,14 @@
                     <i class="fas fa-envelope"></i>
                     <span>Subscribers</span>
                 </li>
+                <li data-target="stories">
+                    <i class="fas fa-quote-right"></i>
+                    <span>Stories</span>
+                </li>
+                <li data-target="spotlight">
+                    <i class="fas fa-star"></i>
+                    <span>Spotlight</span>
+                </li>
                 <li class="exit-admin">
                     <a href="index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px; width: 100%;">
                         <i class="fas fa-sign-out-alt"></i>
@@ -244,6 +252,42 @@
                             </tr>
                         </thead>
                         <tbody id="subscribersTableBody">
+                            <!-- JS will populate -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Success Stories Management Tab -->
+            <section id="storiesSection" class="admin-section">
+                <div class="admin-table-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h3><i class="fas fa-quote-right" style="margin-right: 10px; color: var(--primary);"></i> Manage Success Stories</h3>
+                        <button onclick="addStory()" class="btn-sm btn-approve"><i class="fas fa-plus"></i> Add Story</button>
+                    </div>
+                    <div id="storiesGrid" class="admin-stories-grid">
+                        <!-- JS will populate -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Volunteer Spotlight Management Tab -->
+            <section id="spotlightSection" class="admin-section">
+                <div class="admin-table-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                        <h3><i class="fas fa-star" style="margin-right: 10px; color: var(--primary);"></i> Manage Volunteer Spotlight</h3>
+                        <button onclick="addSpotlight()" class="btn-sm btn-approve"><i class="fas fa-plus"></i> Add Spotlight</button>
+                    </div>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Badge</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spotlightTableBody">
                             <!-- JS will populate -->
                         </tbody>
                     </table>
@@ -763,6 +807,199 @@
                 });
             });
 
+            // --- Success Stories Management ---
+            const defaultStories = [
+                { name: "Aarti K.", role: "Student Beneficiary", quote: "Project Shiksha completely changed my life. I am now pursuing my higher education and dream of becoming a teacher to help others.", image: "https://randomuser.me/api/portraits/women/44.jpg" },
+                { name: "Ravi S.", role: "Volunteer", quote: "Volunteering with Health First gave me an opportunity to give back to my community. It's incredibly fulfilling.", image: "https://randomuser.me/api/portraits/men/32.jpg" }
+            ];
+
+            function loadStories() {
+                let stories = JSON.parse(localStorage.getItem('ngo_stories') || 'null');
+                if (!stories) {
+                    stories = defaultStories;
+                    localStorage.setItem('ngo_stories', JSON.stringify(stories));
+                }
+
+                const grid = document.getElementById('storiesGrid');
+                if (!grid) return;
+
+                if (stories.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 30px;">No success stories added yet. Click "Add Story" to create one.</p>';
+                    return;
+                }
+
+                grid.innerHTML = stories.map((s, i) => `
+                    <div class="admin-story-card">
+                        <div class="admin-story-header">
+                            <img src="${s.image}" alt="${s.name}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);">
+                            <div>
+                                <strong>${s.name}</strong>
+                                <span style="display:block;font-size:0.85rem;color:var(--text-muted);">${s.role}</span>
+                            </div>
+                        </div>
+                        <p style="font-style:italic;color:var(--text-muted);font-size:0.9rem;margin:15px 0;line-height:1.5;">"${s.quote}"</p>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-sm" style="background:#17a2b8;color:white;" onclick="editStory(${i})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-sm btn-reject" onclick="deleteStory(${i})"><i class="fas fa-trash-alt"></i> Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            window.addStory = () => {
+                const name = prompt("Person's Name:");
+                if (!name) return;
+                const role = prompt("Role (e.g. Student Beneficiary, Volunteer):");
+                if (!role) return;
+                const quote = prompt("Their testimonial quote:");
+                if (!quote) return;
+                const image = prompt("Photo URL (or leave blank for default):");
+
+                const stories = JSON.parse(localStorage.getItem('ngo_stories') || '[]');
+                stories.push({
+                    name,
+                    role,
+                    quote,
+                    image: image && image.trim() !== '' ? image : `https://randomuser.me/api/portraits/lego/${stories.length + 1}.jpg`
+                });
+                localStorage.setItem('ngo_stories', JSON.stringify(stories));
+                loadStories();
+            };
+
+            window.editStory = (index) => {
+                const stories = JSON.parse(localStorage.getItem('ngo_stories') || '[]');
+                const s = stories[index];
+                if (!s) return;
+
+                const name = prompt("Person's Name:", s.name);
+                if (!name) return;
+                const role = prompt("Role:", s.role);
+                if (!role) return;
+                const quote = prompt("Quote:", s.quote);
+                if (!quote) return;
+                const image = prompt("Photo URL:", s.image);
+
+                stories[index] = { name, role, quote, image: image || s.image };
+                localStorage.setItem('ngo_stories', JSON.stringify(stories));
+                loadStories();
+            };
+
+            window.deleteStory = (index) => {
+                if (confirm("Delete this success story?")) {
+                    const stories = JSON.parse(localStorage.getItem('ngo_stories') || '[]');
+                    stories.splice(index, 1);
+                    localStorage.setItem('ngo_stories', JSON.stringify(stories));
+                    loadStories();
+                }
+            };
+
+            // --- Volunteer Spotlight Management ---
+            const defaultSpotlights = [
+                { name: "Priya Sharma", badge: "Volunteer of the Month", role: "Teaching & Education", quote: "Seeing children's faces light up when they learn something new makes every moment worth it.", image: "https://randomuser.me/api/portraits/women/65.jpg", stat1: "120+", stat1Label: "Hours", stat2: "45", stat2Label: "Students", stat3: "8", stat3Label: "Months" },
+                { name: "Arjun Patel", badge: "Community Hero", role: "Medical / Healthcare", quote: "Every health camp we organize brings essential care to those who need it the most.", image: "https://randomuser.me/api/portraits/men/75.jpg", stat1: "200+", stat1Label: "Hours", stat2: "300", stat2Label: "Patients", stat3: "12", stat3Label: "Months" },
+                { name: "Sneha Reddy", badge: "Rising Star", role: "Marketing / Social Media", quote: "Sharing our stories online has helped us reach thousands and inspire new volunteers.", image: "https://randomuser.me/api/portraits/women/45.jpg", stat1: "80+", stat1Label: "Hours", stat2: "5K", stat2Label: "Reach", stat3: "6", stat3Label: "Months" }
+            ];
+
+            function loadSpotlight() {
+                let spotlights = JSON.parse(localStorage.getItem('ngo_spotlights') || 'null');
+                if (!spotlights) {
+                    spotlights = defaultSpotlights;
+                    localStorage.setItem('ngo_spotlights', JSON.stringify(spotlights));
+                }
+
+                const tableBody = document.getElementById('spotlightTableBody');
+                if (!tableBody) return;
+
+                if (spotlights.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No spotlight volunteers added yet.</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = spotlights.map((s, i) => `
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <img src="${s.image}" alt="${s.name}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);">
+                                <strong>${s.name}</strong>
+                            </div>
+                        </td>
+                        <td><span class="status-badge approved"><i class="fas fa-star" style="margin-right:4px;"></i>${s.badge}</span></td>
+                        <td>${s.role}</td>
+                        <td>
+                            <button class="btn-sm" style="background:#17a2b8;color:white;" onclick="editSpotlight(${i})"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-reject" onclick="deleteSpotlight(${i})"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            window.addSpotlight = () => {
+                const name = prompt("Volunteer Name:");
+                if (!name) return;
+                const badge = prompt("Badge Title (e.g. Volunteer of the Month, Community Hero):");
+                if (!badge) return;
+                const role = prompt("Role / Department (e.g. Teaching & Education):");
+                if (!role) return;
+                const quote = prompt("Their quote:");
+                if (!quote) return;
+                const image = prompt("Photo URL (or leave blank for default):");
+                const stat1 = prompt("Stat 1 value (e.g. 120+):");
+                const stat1Label = prompt("Stat 1 label (e.g. Hours):");
+                const stat2 = prompt("Stat 2 value (e.g. 45):");
+                const stat2Label = prompt("Stat 2 label (e.g. Students):");
+                const stat3 = prompt("Stat 3 value (e.g. 8):");
+                const stat3Label = prompt("Stat 3 label (e.g. Months):");
+
+                const spotlights = JSON.parse(localStorage.getItem('ngo_spotlights') || '[]');
+                spotlights.push({
+                    name, badge, role, quote,
+                    image: image && image.trim() !== '' ? image : `https://randomuser.me/api/portraits/lego/${spotlights.length + 1}.jpg`,
+                    stat1: stat1 || '0', stat1Label: stat1Label || 'Hours',
+                    stat2: stat2 || '0', stat2Label: stat2Label || 'Impact',
+                    stat3: stat3 || '0', stat3Label: stat3Label || 'Months'
+                });
+                localStorage.setItem('ngo_spotlights', JSON.stringify(spotlights));
+                loadSpotlight();
+            };
+
+            window.editSpotlight = (index) => {
+                const spotlights = JSON.parse(localStorage.getItem('ngo_spotlights') || '[]');
+                const s = spotlights[index];
+                if (!s) return;
+
+                const name = prompt("Name:", s.name);
+                if (!name) return;
+                const badge = prompt("Badge:", s.badge);
+                const role = prompt("Role:", s.role);
+                const quote = prompt("Quote:", s.quote);
+                const image = prompt("Photo URL:", s.image);
+                const stat1 = prompt("Stat 1 value:", s.stat1);
+                const stat1Label = prompt("Stat 1 label:", s.stat1Label);
+                const stat2 = prompt("Stat 2 value:", s.stat2);
+                const stat2Label = prompt("Stat 2 label:", s.stat2Label);
+                const stat3 = prompt("Stat 3 value:", s.stat3);
+                const stat3Label = prompt("Stat 3 label:", s.stat3Label);
+
+                spotlights[index] = {
+                    name, badge: badge || s.badge, role: role || s.role,
+                    quote: quote || s.quote, image: image || s.image,
+                    stat1: stat1 || s.stat1, stat1Label: stat1Label || s.stat1Label,
+                    stat2: stat2 || s.stat2, stat2Label: stat2Label || s.stat2Label,
+                    stat3: stat3 || s.stat3, stat3Label: stat3Label || s.stat3Label
+                };
+                localStorage.setItem('ngo_spotlights', JSON.stringify(spotlights));
+                loadSpotlight();
+            };
+
+            window.deleteSpotlight = (index) => {
+                if (confirm("Delete this spotlight entry?")) {
+                    const spotlights = JSON.parse(localStorage.getItem('ngo_spotlights') || '[]');
+                    spotlights.splice(index, 1);
+                    localStorage.setItem('ngo_spotlights', JSON.stringify(spotlights));
+                    loadSpotlight();
+                }
+            };
+
             function initAdmin() {
                 loadApplications();
                 loadVolunteers();
@@ -770,6 +1007,8 @@
                 loadGallery();
                 loadEvents();
                 loadSubscribers();
+                loadStories();
+                loadSpotlight();
                 loadActivityLog();
                 setTimeout(renderChart, 100);
             }
