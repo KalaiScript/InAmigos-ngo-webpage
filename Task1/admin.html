@@ -11,8 +11,8 @@
 </head>
 <body class="admin-body">
     <!-- Admin Login Modal -->
-    <div id="adminLoginModal" class="admin-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
-        <div class="admin-modal-content" style="background: #fff; padding: 40px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+    <div id="adminLoginModal" class="admin-modal" style="display: flex;">
+        <div class="admin-modal-content" style="max-width: 400px;">
             <div class="logo" style="text-align: center; margin-bottom: 20px; font-size: 1.8rem; font-weight: bold;">
                 <span class="logo-in" style="color: #0056b3;">In</span>Amigos
             </div>
@@ -70,7 +70,12 @@
         <!-- Main Content -->
         <main class="admin-main">
             <header class="admin-header">
-                <h1 id="pageTitle">Admin <span class="highlight">Dashboard</span></h1>
+                <div class="admin-header-left">
+                    <button id="sidebarToggle" class="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Admin <span class="highlight">Dashboard</span></h1>
+                </div>
                 <div class="admin-user">
                     <button id="adminThemeToggle" class="admin-theme-btn" title="Toggle Dark Mode">
                         <i class="fas fa-moon"></i>
@@ -248,8 +253,8 @@
     </div>
 
     <!-- Application Details Modal -->
-    <div id="detailsModal" class="admin-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
-        <div class="admin-modal-content" style="background: #fff; padding: 40px; border-radius: 10px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;">
+    <div id="detailsModal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content" style="position: relative;">
             <button onclick="document.getElementById('detailsModal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
             <h2 style="margin-bottom: 20px;">Application Details</h2>
             <div id="detailsContent" style="font-size: 1.1rem; line-height: 1.6;">
@@ -728,6 +733,35 @@
                     localStorage.setItem('admin_dark', isDark);
                 });
             }
+
+            // Sidebar Toggle for Mobile
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.admin-sidebar');
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('sidebar-open');
+                    overlay.classList.toggle('active');
+                });
+            }
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('sidebar-open');
+                overlay.classList.remove('active');
+            });
+
+            // Close sidebar on nav click (mobile)
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('sidebar-open');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
 
             function initAdmin() {
                 loadApplications();

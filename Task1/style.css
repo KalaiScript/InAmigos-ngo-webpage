@@ -502,6 +502,13 @@ footer {
 
 .w-100 { width: 100%; }
 
+/* --- Form Row (two columns) --- */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
 /* --- Modal Styles --- */
 .modal {
     display: none;
@@ -951,6 +958,35 @@ footer {
     }
     .btn-large {
         width: 100%;
+    }
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .contact-wrapper {
+        padding: 25px 15px;
+    }
+    .status-search {
+        flex-direction: column;
+    }
+    .status-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    .section-padding {
+        padding: 50px 0;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+    h2 {
+        font-size: 1.8rem;
+    }
+    .cta h2 {
+        font-size: 1.6rem;
     }
 }
 

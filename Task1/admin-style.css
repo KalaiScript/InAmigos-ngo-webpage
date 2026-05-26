@@ -43,6 +43,7 @@ body.admin-body {
     transition: var(--transition-speed);
     z-index: 1000;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
 .admin-sidebar .logo {
@@ -78,6 +79,7 @@ body.admin-body {
 .admin-nav li i {
     font-size: 1.1rem;
     width: 20px;
+    flex-shrink: 0;
 }
 
 .admin-nav li:hover {
@@ -109,19 +111,70 @@ body.admin-body {
     margin-left: 260px;
     padding: 40px;
     transition: var(--transition-speed);
+    min-width: 0; /* Prevent flex child overflow */
 }
 
+/* Admin Header */
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 40px;
     animation: slideDown 0.6s ease-out;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .admin-header h1 {
     font-size: 1.8rem;
     font-weight: 700;
+}
+
+/* Sidebar Toggle Button (hidden on desktop) */
+.sidebar-toggle-btn {
+    display: none;
+    background: none;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(67, 97, 238, 0.05);
+}
+
+/* Sidebar Overlay (for mobile) */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
 }
 
 .highlight { color: var(--primary); }
@@ -134,6 +187,7 @@ body.admin-body {
     background: white;
     border-radius: 50px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
 }
 
 .admin-user i {
@@ -236,6 +290,7 @@ body.admin-body {
 .admin-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 500px; /* Ensures table scrolls on very small screens */
 }
 
 .admin-table th {
@@ -245,6 +300,7 @@ body.admin-body {
     font-weight: 600;
     border-bottom: 2px solid var(--bg-main);
     font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .admin-table td {
@@ -264,6 +320,7 @@ body.admin-body {
     font-size: 0.8rem;
     font-weight: 600;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .status-badge.pending-review { 
@@ -381,12 +438,47 @@ body.admin-body {
     transform: translateY(0);
 }
 
-/* Responsive */
+/* --- Admin Login & Modals (overrides for inline styles) --- */
+.admin-modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.admin-modal-content {
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* --- Responsive --- */
+
+/* Tablet: collapse sidebar to icon-only */
 @media (max-width: 992px) {
     .admin-sidebar {
         width: 80px;
     }
-    .admin-sidebar li span, .admin-sidebar .logo span:not(.logo-in) {
+    .admin-sidebar li span,
+    .admin-sidebar .logo {
+        font-size: 0;
+    }
+    .admin-sidebar .logo .logo-in {
+        font-size: 1.5rem;
+    }
+    .admin-nav li span {
         display: none;
     }
     .admin-main {
@@ -403,14 +495,88 @@ body.admin-body {
     .admin-nav li i {
         margin: 0;
     }
+    .admin-header h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Mobile: hide sidebar completely, show toggle */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 260px;
+        transform: translateX(-100%);
+    }
+    .admin-sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+    /* Restore full sidebar layout on mobile (override tablet icon-only mode) */
+    .admin-nav li span {
+        display: inline !important;
+    }
+    .admin-sidebar .logo {
+        font-size: 1.5rem !important;
+        text-align: left !important;
+    }
+    .admin-nav li {
+        justify-content: flex-start !important;
+        padding: 12px 25px !important;
+    }
+    .admin-main {
+        margin-left: 0;
+        padding: 20px 15px;
+    }
+    .sidebar-toggle-btn {
+        display: flex;
+    }
+    .admin-header {
+        margin-bottom: 25px;
+    }
+    .admin-header h1 {
+        font-size: 1.2rem;
+    }
+    .admin-user span {
+        display: none;
+    }
+    .admin-user {
+        padding: 8px 10px;
+    }
+    .admin-stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    .stat-box {
+        padding: 20px 15px;
+    }
+    .stat-box h2 {
+        font-size: 1.5rem;
+    }
+    .admin-table-container {
+        padding: 20px 15px;
+    }
+    .gallery-management-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
 }
 
 @media (max-width: 576px) {
     .admin-main {
-        padding: 20px;
+        padding: 15px 10px;
     }
     .admin-stats-grid {
         grid-template-columns: 1fr;
+    }
+    .admin-header h1 {
+        font-size: 1.1rem;
+    }
+    .admin-table-container {
+        padding: 15px 10px;
+    }
+    .admin-modal-content {
+        padding: 25px 20px;
+    }
+    .gallery-management-grid {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
@@ -444,6 +610,7 @@ body.admin-body {
     font-size: 0.9rem;
     color: var(--text-main);
     width: 200px;
+    max-width: 100%;
 }
 
 .admin-search-box input::placeholder {
@@ -461,6 +628,7 @@ body.admin-body {
     font-weight: 600;
     font-size: 0.85rem;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .btn-export:hover {
@@ -506,12 +674,14 @@ body.admin-body {
 
 .activity-content {
     flex: 1;
+    min-width: 0; /* Prevent text overflow */
 }
 
 .activity-content p {
     font-size: 0.95rem;
     margin-bottom: 4px;
     line-height: 1.4;
+    word-break: break-word;
 }
 
 .activity-time {
@@ -536,6 +706,7 @@ body.admin-body {
     font-size: 1rem;
     color: var(--text-muted);
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .admin-theme-btn:hover {
@@ -569,6 +740,11 @@ body.admin-dark .admin-user {
 body.admin-dark .admin-theme-btn {
     border-color: #3a3a4a;
     color: #ffc107;
+}
+
+body.admin-dark .sidebar-toggle-btn {
+    border-color: #3a3a4a;
+    color: #e4e4f0;
 }
 
 body.admin-dark .stat-box {
