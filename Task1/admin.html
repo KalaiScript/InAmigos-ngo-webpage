@@ -971,6 +971,46 @@
                 updateDashboardExtras();
                 setTimeout(renderChart, 100);
             }
+
+            // Auth Logic
+            const adminLoginModal = document.getElementById('adminLoginModal');
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            const adminMainContent = document.getElementById('adminMainContent');
+            const loginError = document.getElementById('loginError');
+
+            if (sessionStorage.getItem('admin_auth') === 'true') {
+                adminLoginModal.style.display = 'none';
+                adminMainContent.style.display = 'flex';
+                initAdmin();
+            } else {
+                adminLoginModal.style.display = 'flex';
+                adminMainContent.style.display = 'none';
+            }
+
+            adminLoginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pwd = document.getElementById('adminPassword').value;
+                const currentPwd = localStorage.getItem('admin_pwd') || 'admin123';
+                if (pwd === currentPwd) {
+                    sessionStorage.setItem('admin_auth', 'true');
+                    adminLoginModal.style.display = 'none';
+                    adminMainContent.style.display = 'flex';
+                    initAdmin();
+                } else {
+                    loginError.style.display = 'block';
+                }
+            });
+
+            // Search / Filter Logic
+            const searchInput = document.getElementById('adminSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.toLowerCase();
+                    const rows = tableBody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(query) ? '' : 'none';
+                    });
                 });
             }
 
