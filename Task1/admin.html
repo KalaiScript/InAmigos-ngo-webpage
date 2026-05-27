@@ -703,6 +703,8 @@
             };
 
             let chartInstance = null;
+            let monthlyChartInstance = null;
+
             function renderChart() {
                 const canvas = document.getElementById('donationChart');
                 if (!canvas) return;
@@ -727,7 +729,8 @@
                         labels: ['Volunteers', 'Donors', 'Partners'],
                         datasets: [{
                             data: [volCount, donCount, partnerCount],
-                            backgroundColor: ['#0056b3', '#28a745', '#ffc107']
+                            backgroundColor: ['#4361ee', '#28a745', '#f8961e'],
+                            borderWidth: 0
                         }]
                     },
                     options: {
@@ -738,46 +741,236 @@
                         }
                     }
                 });
+
+                // Monthly Trend Chart
+                renderMonthlyChart(apps);
             }
 
-            // Auth Logic
-            const adminLoginModal = document.getElementById('adminLoginModal');
-            const adminLoginForm = document.getElementById('adminLoginForm');
-            const adminMainContent = document.getElementById('adminMainContent');
-            const loginError = document.getElementById('loginError');
+            function renderMonthlyChart(apps) {
+                const canvas = document.getElementById('monthlyChart');
+                if (!canvas) return;
 
-            if (sessionStorage.getItem('admin_auth') === 'true') {
-                adminLoginModal.style.display = 'none';
-                adminMainContent.style.display = 'flex';
-                initAdmin();
-            } else {
-                adminLoginModal.style.display = 'flex';
-                adminMainContent.style.display = 'none';
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const monthCounts = new Array(12).fill(0);
+
+                Object.values(apps).forEach(app => {
+                    if (app.date) {
+                        const parts = app.date.split(' ');
+                        if (parts.length >= 2) {
+                            const monthIdx = months.findIndex(m => parts[1] && parts[1].startsWith(m));
+                            if (monthIdx >= 0) monthCounts[monthIdx]++;
+                        }
+                    }
+                });
+
+                const ctx = canvas.getContext('2d');
+                if (monthlyChartInstance) monthlyChartInstance.destroy();
+
+                monthlyChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Applications',
+                            data: monthCounts,
+                            backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                            borderRadius: 6,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Monthly Applications Trend' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
             }
 
-            adminLoginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const pwd = document.getElementById('adminPassword').value;
-                if (pwd === 'admin123') {
-                    sessionStorage.setItem('admin_auth', 'true');
-                    adminLoginModal.style.display = 'none';
-                    adminMainContent.style.display = 'flex';
-                    initAdmin();
-                } else {
-                    loginError.style.display = 'block';
+            // --- Notification Bell ---
+            function updateNotifications() {
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                const pendingCount = Object.values(apps).filter(a => a.status === 'Pending Review').length;
+                const badge = document.getElementById('notifBadge');
+                if (badge) {
+                    if (pendingCount > 0) {
+                        badge.textContent = pendingCount;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
                 }
-            });
+            }
 
-            // Search / Filter Logic
-            const searchInput = document.getElementById('adminSearchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.toLowerCase();
-                    const rows = tableBody.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(query) ? '' : 'none';
-                    });
+            const notifBell = document.getElementById('notifBell');
+            if (notifBell) {
+                notifBell.addEventListener('click', () => {
+                    const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                    const pending = Object.entries(apps).filter(([_, a]) => a.status === 'Pending Review');
+                    if (pending.length === 0) {
+                        alert('🎉 No pending reviews! All caught up.');
+                    } else {
+                        alert(`📋 You have ${pending.length} pending application(s) to review.\n\nNames:\n${pending.map(([_, a]) => '• ' + a.name).join('\n')}`);
+                        // Navigate to dashboard
+                        navItems.forEach(i => i.classList.remove('active'));
+                        document.querySelector('[data-target="dashboard"]').classList.add('active');
+                        sections.forEach(s => s.classList.remove('active'));
+                        document.getElementById('dashboardSection').classList.add('active');
+                        pageTitle.innerHTML = 'Admin <span class="highlight">Dashboard</span>';
+                    }
+                });
+            }
+
+            // --- Dashboard Extra Stats ---
+            function updateDashboardExtras() {
+                const subs = JSON.parse(localStorage.getItem('ngo_subs') || '[]');
+                const events = JSON.parse(localStorage.getItem('ngo_events') || '[]');
+                const dashSub = document.getElementById('dashSubCount');
+                const dashEvent = document.getElementById('dashEventCount');
+                if (dashSub) dashSub.textContent = subs.length;
+                if (dashEvent) dashEvent.textContent = events.length;
+            }
+
+            // --- Settings: Donation Goal ---
+            function loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('ngo_settings') || '{}');
+                const goalInput = document.getElementById('settingGoal');
+                const phoneInput = document.getElementById('settingPhone');
+                const emailInput = document.getElementById('settingEmail');
+                const addressInput = document.getElementById('settingAddress');
+
+                if (goalInput && settings.goal) goalInput.value = settings.goal;
+                if (phoneInput && settings.phone) phoneInput.value = settings.phone;
+                if (emailInput && settings.email) emailInput.value = settings.email;
+                if (addressInput && settings.address) addressInput.value = settings.address;
+
+                updateGoalProgress();
+            }
+
+            function updateGoalProgress() {
+                const settings = JSON.parse(localStorage.getItem('ngo_settings') || '{}');
+                const goal = parseInt(settings.goal) || 0;
+                const apps = JSON.parse(localStorage.getItem('ngo_apps') || '{}');
+                let totalDonations = 0;
+                Object.values(apps).forEach(a => {
+                    if (a.type === 'donate') totalDonations += parseInt(a.amount) || 0;
+                });
+
+                const bar = document.getElementById('goalProgressBar');
+                const text = document.getElementById('goalProgressText');
+                if (bar && text) {
+                    const pct = goal > 0 ? Math.min(100, Math.round((totalDonations / goal) * 100)) : 0;
+                    bar.style.width = pct + '%';
+                    text.textContent = pct + '%';
+                }
+            }
+
+            window.saveGoal = () => {
+                const val = document.getElementById('settingGoal').value;
+                const settings = JSON.parse(localStorage.getItem('ngo_settings') || '{}');
+                settings.goal = val;
+                localStorage.setItem('ngo_settings', JSON.stringify(settings));
+                updateGoalProgress();
+                alert('✅ Donation goal saved!');
+            };
+
+            window.saveContact = () => {
+                const settings = JSON.parse(localStorage.getItem('ngo_settings') || '{}');
+                settings.phone = document.getElementById('settingPhone').value;
+                settings.email = document.getElementById('settingEmail').value;
+                settings.address = document.getElementById('settingAddress').value;
+                localStorage.setItem('ngo_settings', JSON.stringify(settings));
+                alert('✅ Contact info saved!');
+            };
+
+            // --- Settings: Password Change ---
+            window.changePassword = () => {
+                const currentPwd = localStorage.getItem('admin_pwd') || 'admin123';
+                const oldPwd = document.getElementById('settingOldPwd').value;
+                const newPwd = document.getElementById('settingNewPwd').value;
+                const confirmPwd = document.getElementById('settingConfirmPwd').value;
+                const msgEl = document.getElementById('pwdMsg');
+
+                if (oldPwd !== currentPwd) {
+                    msgEl.style.display = 'block';
+                    msgEl.style.background = 'rgba(247,37,133,0.1)';
+                    msgEl.style.color = 'var(--danger)';
+                    msgEl.textContent = '❌ Current password is incorrect.';
+                    return;
+                }
+                if (newPwd.length < 4) {
+                    msgEl.style.display = 'block';
+                    msgEl.style.background = 'rgba(248,150,30,0.1)';
+                    msgEl.style.color = 'var(--warning)';
+                    msgEl.textContent = '⚠️ New password must be at least 4 characters.';
+                    return;
+                }
+                if (newPwd !== confirmPwd) {
+                    msgEl.style.display = 'block';
+                    msgEl.style.background = 'rgba(247,37,133,0.1)';
+                    msgEl.style.color = 'var(--danger)';
+                    msgEl.textContent = '❌ Passwords do not match.';
+                    return;
+                }
+
+                localStorage.setItem('admin_pwd', newPwd);
+                msgEl.style.display = 'block';
+                msgEl.style.background = 'rgba(76,201,240,0.1)';
+                msgEl.style.color = 'var(--success)';
+                msgEl.textContent = '✅ Password updated successfully!';
+                document.getElementById('settingOldPwd').value = '';
+                document.getElementById('settingNewPwd').value = '';
+                document.getElementById('settingConfirmPwd').value = '';
+            };
+
+            // --- Settings: Danger Zone ---
+            window.clearAllApps = () => {
+                if (confirm('⚠️ This will delete ALL applications, volunteers, and donations. Are you sure?')) {
+                    localStorage.removeItem('ngo_apps');
+                    document.getElementById('resetMsg').style.display = 'block';
+                    document.getElementById('resetMsg').textContent = '✅ All applications cleared.';
+                    initAdmin();
+                }
+            };
+
+            window.clearAllSubs = () => {
+                if (confirm('⚠️ This will delete ALL newsletter subscribers. Are you sure?')) {
+                    localStorage.removeItem('ngo_subs');
+                    document.getElementById('resetMsg').style.display = 'block';
+                    document.getElementById('resetMsg').textContent = '✅ All subscribers cleared.';
+                    initAdmin();
+                }
+            };
+
+            window.resetEverything = () => {
+                if (confirm('🚨 DANGER: This will wipe ALL data (applications, events, gallery, stories, spotlights, subscribers, settings). This CANNOT be undone!\n\nType OK to confirm.')) {
+                    const keys = ['ngo_apps', 'ngo_events', 'ngo_gallery', 'ngo_stories', 'ngo_spotlights', 'ngo_subs', 'ngo_settings', 'ngo_activity'];
+                    keys.forEach(k => localStorage.removeItem(k));
+                    document.getElementById('resetMsg').style.display = 'block';
+                    document.getElementById('resetMsg').textContent = '✅ Factory reset complete. All data cleared.';
+                    initAdmin();
+                }
+            };
+
+            function initAdmin() {
+                loadApplications();
+                loadVolunteers();
+                loadDonations();
+                loadGallery();
+                loadEvents();
+                loadSubscribers();
+                loadStories();
+                loadSpotlight();
+                loadActivityLog();
+                loadSettings();
+                updateNotifications();
+                updateDashboardExtras();
+                setTimeout(renderChart, 100);
+            }
                 });
             }
 
