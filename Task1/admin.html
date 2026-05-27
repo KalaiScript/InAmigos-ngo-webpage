@@ -66,6 +66,10 @@
                     <i class="fas fa-star"></i>
                     <span>Spotlight</span>
                 </li>
+                <li data-target="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </li>
                 <li class="exit-admin">
                     <a href="index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px; width: 100%;">
                         <i class="fas fa-sign-out-alt"></i>
@@ -85,6 +89,10 @@
                     <h1 id="pageTitle">Admin <span class="highlight">Dashboard</span></h1>
                 </div>
                 <div class="admin-user">
+                    <button id="notifBell" class="admin-theme-btn" title="Notifications" style="position:relative;">
+                        <i class="fas fa-bell"></i>
+                        <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+                    </button>
                     <button id="adminThemeToggle" class="admin-theme-btn" title="Toggle Dark Mode">
                         <i class="fas fa-moon"></i>
                     </button>
@@ -111,6 +119,16 @@
                         <p>Approved Volunteers</p>
                         <h2 id="approvedApps">0</h2>
                     </div>
+                    <div class="stat-box">
+                        <i class="fas fa-envelope-open-text"></i>
+                        <p>Subscribers</p>
+                        <h2 id="dashSubCount">0</h2>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>Active Events</p>
+                        <h2 id="dashEventCount">0</h2>
+                    </div>
                 </div>
 
                 <div class="admin-table-container">
@@ -124,8 +142,13 @@
                             <button id="exportCsvBtn" class="btn-export"><i class="fas fa-file-csv"></i> Export Data</button>
                         </div>
                     </div>
-                    <div style="width: 100%; max-width: 600px; margin: 0 auto 30px;">
-                        <canvas id="donationChart"></canvas>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px;">
+                        <div style="width: 100%; max-width: 100%;">
+                            <canvas id="donationChart"></canvas>
+                        </div>
+                        <div style="width: 100%; max-width: 100%;">
+                            <canvas id="monthlyChart"></canvas>
+                        </div>
                     </div>
                     <table class="admin-table">
                         <thead>
