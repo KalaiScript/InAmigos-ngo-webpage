@@ -649,6 +649,12 @@ body.admin-dark #settingsSection label {
     .admin-stories-grid {
         grid-template-columns: 1fr;
     }
+    #settingsSection .admin-stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+    #dashboardSection [style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 @media (max-width: 576px) {
